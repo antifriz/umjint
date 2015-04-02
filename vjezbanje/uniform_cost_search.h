@@ -10,13 +10,13 @@
 class UniformCostSearch : public GeneralSearchAlgorithm {
 protected:
 
-    virtual std::vector<State> succFunct(State const s) = 0;
+    virtual std::vector<State> succFunct(State const s) const = 0;
 
-    virtual bool goalFunct(State const s) = 0;
+    virtual bool goalFunct(State const s) const = 0;
 
-    virtual NodePtr generateNode(NodePtr const &parent, State const &state);
+    virtual int getDistance(State const &a, State const &b) const = 0;
 
-    virtual bool nodePtrComparator(NodePtr a, NodePtr b);
+    virtual NodePtr generateNode(NodePtr const &parent, State const &state) const;
 
 
 };

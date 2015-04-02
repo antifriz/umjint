@@ -13,24 +13,30 @@
 
 class GeneralSearchAlgorithm {
 private:
-    std::forward_list<NodePtr> const expand(NodePtr const parent);
+    std::forward_list<NodePtr> const expand(NodePtr const parent) const;
 
-    inline NodePtr generateInitialNode(State const &state);
+    inline NodePtr generateInitialNode(State const &state) const;
+
 
 protected:
-    virtual NodePtr generateNode(NodePtr const &parent, State const &state) = 0;
+    virtual NodePtr generateNode(NodePtr const &parent, State const &state) const = 0;
 
-    virtual std::vector<State> succFunct(State const s) = 0;
+    virtual std::vector<State> succFunct(State const s) const = 0;
 
-    virtual bool goalFunct(State const s) = 0;
-
-    virtual bool nodePtrComparator(NodePtr a, NodePtr b) = 0;
+    virtual bool goalFunct(State const s) const = 0;
 
 public:
     GeneralSearchAlgorithm() {
     }
 
-    NodePtr search(State initialState);
+    class Comparator {
+    public:
+        inline bool operator()(NodePtr a, NodePtr b) const {
+            return a->getCost() > b->getCost();
+        }
+    };
+
+    virtual NodePtr search(State initialState) const;
 };
 
 

@@ -3,6 +3,7 @@
 //
 
 #include "node.h"
+#include "star_trek_defs.h"
 
 #include <iostream>
 
@@ -22,6 +23,8 @@ void Node::pathReconstruction(NodePtr const &leaf, stack<NodePtr> &nodeStack) {
 }
 
 void Node::print() const {
-    cout << string(this->getCost(), ' ') << this->getState().getId() << endl;
+    int x,y;
+    ST::unzipCoordinates(this->getState().getId(),x,y);
+    cout << string((unsigned int) this->getCost(), ' ') <<"(" <<x<<","<<y<<") " << this->getCost()<< endl;
 }
 

@@ -6,10 +6,6 @@
 
 using namespace std;
 
-bool UniformCostSearch::nodePtrComparator(NodePtr a, NodePtr b) {
-    return a->getCost() > b->getCost();
-}
-
-NodePtr UniformCostSearch::generateNode(NodePtr const &parent, State const &state) {
-    return make_shared<Node>(state, parent->getCost() + 1, parent);
+NodePtr UniformCostSearch::generateNode(NodePtr const &parent, State const &state) const {
+    return make_shared<Node>(state, parent->getCost() + getDistance(parent->getState(), state), parent);
 }

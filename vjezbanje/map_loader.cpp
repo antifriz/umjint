@@ -2,29 +2,34 @@
 // Created by Ivan on 02-Apr-15.
 //
 
-
-#include "map_loader.h"
-#include "star_trek.h"
-
-using namespace std;
-
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
 
-void loadMapFromFile(string const &path, vector<vector<int>> &map) {
+
+#include "map_loader.h"
+#include "star_trek_defs.h"
+
+
+void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& transitions, int &initialId) {
+    using namespace std;
+
     ifstream mapConfigFile;
     mapConfigFile.open(path);
 
     if (!mapConfigFile.is_open()) {
-        cerr << "Unable to open config file." << endl;
+        cerr << "Unable to open config file." << endl<<path<<endl;
         exit(1);
     }
+
+    transitions.resize((unsigned int) TELEPORT_TRANSITION_OFFSET + 1);
 
     string line;
 
     while (getline(mapConfigFile, line)) {
+
         vector<int> row;
 
         cout << line << endl;
@@ -41,6 +46,7 @@ void loadMapFromFile(string const &path, vector<vector<int>> &map) {
             else {
                 switch (sub[0]) {
                     case 'S':
+                        transitions[SHUTTLE_TRANSITION_OFFSET].push_back(ST::zipCoordinates(row.size(), map.size()));
                         switch (sub[1]) {
                             case 'S':
                                 row.push_back(SHUTTLE_LAUNCH_PAD);
@@ -54,11 +60,20 @@ void loadMapFromFile(string const &path, vector<vector<int>> &map) {
                                 exit(1);
                         }
                         break;
-                    case 'T':
+                    case 'T': {
                         sub = sub.substr(1);
-                        row.push_back(TELEPORT_OFFSET - atoi(sub.c_str()));
+                        int idx = atoi(sub.c_str());
+
+                        int offset = TELEPORT_TRANSITION_OFFSET + idx;
+                        if (transitions.size() <= offset)
+                            transitions.resize((unsigned int) (offset + 1));
+                        transitions[offset].push_back(ST::zipCoordinates(row.size(), map.size()));
+
+                        row.push_back(TELEPORT_MAP_OFFSET - idx);
+                    }
                         break;
                     case 'P':
+                        initialId = ST::zipCoordinates(row.size(), map.size());
                         row.push_back(CONTROL_BRIDGE);
                         break;
                     case 'C':

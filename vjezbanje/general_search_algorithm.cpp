@@ -6,15 +6,16 @@
 
 #include <queue>
 #include <set>
+#include <iostream>
 
 using namespace std;
 
 
-NodePtr GeneralSearchAlgorithm::generateInitialNode(State const &state) {
+NodePtr GeneralSearchAlgorithm::generateInitialNode(State const &state) const {
     return std::make_shared<Node>(state, 0, NodePtr());
 }
 
-forward_list<NodePtr> const GeneralSearchAlgorithm::expand(NodePtr const parent) {
+forward_list<NodePtr> const GeneralSearchAlgorithm::expand(NodePtr const parent) const {
     vector<State> container = succFunct(parent->getState());
     forward_list<NodePtr> succQueue;
 
@@ -28,8 +29,8 @@ forward_list<NodePtr> const GeneralSearchAlgorithm::expand(NodePtr const parent)
 }
 
 
-NodePtr GeneralSearchAlgorithm::search(State initialState) {
-    priority_queue<NodePtr> openQueue;
+NodePtr GeneralSearchAlgorithm::search(State initialState) const {
+    priority_queue<NodePtr,vector<NodePtr>,GeneralSearchAlgorithm::Comparator> openQueue;
     openQueue.push(generateInitialNode(initialState));
 
     set<State> discoveredSet;
@@ -40,6 +41,7 @@ NodePtr GeneralSearchAlgorithm::search(State initialState) {
         NodePtr n = openQueue.top();
         openQueue.pop();
 
+        n->print();
         //cout<<"size: "<<openQueue.size()<<endl;
 
         if (goalFunct(n->getState())) return n;
@@ -49,7 +51,8 @@ NodePtr GeneralSearchAlgorithm::search(State initialState) {
             Node &item = **it;
             if (discoveredSet.find(item.getState()) == discoveredSet.end()) {
                 discoveredSet.insert(item.getState());
-                //cout<<"pushed "<<it->getState().getId() <<endl;
+                /*cout<<"pushed ";
+                (*it)->print();*/
                 openQueue.push(*it);
             }
         }

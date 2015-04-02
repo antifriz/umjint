@@ -8,6 +8,6 @@
 #include <string>
 #include <vector>
 
-void loadMapFromFile(std::string const &path, std::vector<std::vector<int>> &map);
+void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& vector, int & initialId);
 
 #endif //_SEARCH_MAP_LOADER_H_
