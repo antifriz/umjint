@@ -10,7 +10,10 @@
 using namespace std;
 
 bool Node::operator<(Node const &other) const {
-    return this->cost < other.cost;
+    if (this->getEstimatedCost() != other.getEstimatedCost())
+        return this->getEstimatedCost() < other.getEstimatedCost();
+    else
+        return this->getState().getId() < other.getState().getId();
 }
 
 void Node::pathReconstruction(NodePtr const &leaf, stack<NodePtr> &nodeStack) {
@@ -23,8 +26,8 @@ void Node::pathReconstruction(NodePtr const &leaf, stack<NodePtr> &nodeStack) {
 }
 
 void Node::print() const {
-    int x,y;
-    ST::unzipCoordinates(this->getState().getId(),x,y);
-    cout << string((unsigned int) this->getCost(), ' ') <<"(" <<x<<","<<y<<") " << this->getCost()<< endl;
+    int x, y;
+    ST::unzipCoordinates(this->getState().getId(), x, y);
+    cout << string((unsigned int) this->getCurrentCost(), ' ') << "(" << x << "," << y << ") " << this->getCurrentCost() << endl;
 }
 

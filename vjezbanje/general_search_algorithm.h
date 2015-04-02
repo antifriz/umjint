@@ -7,36 +7,55 @@
 
 #include "node.h"
 
-#include <forward_list>
-#include <vector>
+#include <set>
 
 
 class GeneralSearchAlgorithm {
 private:
-    std::forward_list<NodePtr> const expand(NodePtr const parent) const;
+    long openNodeCount;
 
-    inline NodePtr generateInitialNode(State const &state) const;
-
-
-protected:
-    virtual NodePtr generateNode(NodePtr const &parent, State const &state) const = 0;
-
-    virtual std::vector<State> succFunct(State const s) const = 0;
-
-    virtual bool goalFunct(State const s) const = 0;
-
-public:
-    GeneralSearchAlgorithm() {
+    inline NodePtr generateInitialNode(int id) const {
+        return std::make_shared<Node>(State(id), 0, 0, NodePtr());
     }
 
+
+    inline NodePtr generateNode(NodePtr const &parent, State const &state) const {
+        auto currentCost = parent->getCurrentCost() + distanceFunc(parent->getState(), state);
+        return std::make_shared<Node>(state, currentCost, currentCost + heuristicFunc(state), parent);
+    };
+
+    std::vector<NodePtr> expand(NodePtr const &parent);
+
+    template<typename ComparatorT>
+    const NodePtr removeHead(std::set<NodePtr, ComparatorT> &container);
+
+    template<typename ComparatorT>
+    bool seenBetterState(NodePtr const &n, std::set<NodePtr, ComparatorT> &container);
+
+protected:
+
+    virtual int distanceFunc(State const &a, State const &b) const = 0;
+
+    virtual int heuristicFunc(State const &s) const = 0;
+
+    virtual const std::vector<State> succFunc(State const &state) const = 0;
+
+    virtual bool goalFunc(State const &state) const = 0;
+
+    inline long getOpenNodeCount() const {
+        return openNodeCount;
+    }
+
+    NodePtr search(int initialStateId);
+
+public:
     class Comparator {
     public:
         inline bool operator()(NodePtr a, NodePtr b) const {
-            return a->getCost() > b->getCost();
+            return *b < *a;
         }
     };
 
-    virtual NodePtr search(State initialState) const;
 };
 
 

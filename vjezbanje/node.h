@@ -18,12 +18,14 @@ typedef std::shared_ptr<Node> NodePtr;
 class Node {
 private:
     State state;
-    int cost;
+    int current_cost;
+    int estimated_cost;
     NodePtr parent;
 
 
 public:
-    Node(State const &state, int cost, NodePtr parent) : state(state), cost(cost), parent(parent) {
+    Node(State const &state, int current_cost, int estimated_cost, NodePtr parent)
+            : state(state), current_cost(current_cost), estimated_cost(estimated_cost), parent(parent) {
     }
 
     Node(const Node &) = delete;                 // Prevent copy-construction
@@ -54,8 +56,8 @@ public:
         }
     };*/
 
-    inline int getCost() const {
-        return cost;
+    inline int getCurrentCost() const {
+        return current_cost;
     }
 
     inline NodePtr getParent() const {
@@ -64,6 +66,10 @@ public:
 
     inline State getState() const {
         return state;
+    }
+
+    inline int getEstimatedCost() const {
+        return estimated_cost;
     }
 };
 
