@@ -1,9 +1,0 @@
-//
-// Created by Ivan on 23-Mar-15.
-//
-
-#ifndef _GENERAL_SEARCH_ALGORITHM
-#define _GENERAL_SEARCH_ALGORITHM
-
-
-#endif //_GENERAL_SEARCH_ALGORITHM
