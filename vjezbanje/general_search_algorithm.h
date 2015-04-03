@@ -11,6 +11,7 @@
 
 
 class GeneralSearchAlgorithm {
+
 private:
     long openNodeCount;
 
@@ -55,6 +56,9 @@ public:
             return *b < *a;
         }
     };
+
+    GeneralSearchAlgorithm() : openNodeCount(0) {
+    }
 
 };
 

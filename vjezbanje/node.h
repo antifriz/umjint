@@ -71,6 +71,8 @@ public:
     inline int getEstimatedCost() const {
         return estimated_cost;
     }
+
+    void print_w_depth() const;
 };
 
 

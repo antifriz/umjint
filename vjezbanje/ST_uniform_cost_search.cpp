@@ -6,21 +6,36 @@
 #include "map_loader.h"
 #include <algorithm>
 #include <iostream>
-#include <conio.h>
 
 using namespace std;
 
 
 ST_uniform_cost_search::ST_uniform_cost_search(std::string path) {
-    loadMapFromFile(path, map, transitions, initialId);
+    loadMapFromFile(path, map, transitions, initialId, goalState);
 
-    mapHalfSize = map.size() >> 1;
+    mapHalfSize = (int) (map.size() >> 1);
 
     cout << "map half size: " << mapHalfSize << endl;
 }
 
 void ST_uniform_cost_search::run() {
-    cout << (search(initialId) ? "OK" : "NOT OK") << endl;
+
+    NodePtr n = search(initialId);
+
+    cout << (n ? "OK" : "NOT OK") << endl;
+
+
+    stack<NodePtr> stack;
+    Node::pathReconstruction(n, stack);
+
+    while (!stack.empty()) {
+        stack.top()->print();
+        stack.pop();
+        if (!stack.empty())
+            cout << " ->";
+        cout << endl;
+    }
+    cout << this->getOpenNodeCount() << endl;
 }
 
 int ST_uniform_cost_search::distanceFunc(State const &a, State const &b) const {
@@ -29,15 +44,15 @@ int ST_uniform_cost_search::distanceFunc(State const &a, State const &b) const {
     fromState(b, xb, yb);
     int manhattan_dist = abs(xb - xa) + abs(yb - ya);
 
-    cout << "height (" << xa << "," << ya << ") - (" << xb << "," << yb << "): " << getHeight(xa, ya) << " " << getHeight(xb, yb) << " " << manhattan_dist << endl;
+    //cout << "height (" << xa << "," << ya << ") - (" << xb << "," << yb << "): " << getHeight(xa, ya) << " " << getHeight(xb, yb) << " " << manhattan_dist << endl;
 
     if (manhattan_dist == 1) return abs(getHeight(xa, ya) - getHeight(xb, yb));
     if (isShuttle(xa, xa)) manhattan_dist *= 3;
     return manhattan_dist;
 }
 
-int ST_uniform_cost_search::heuristicFunc(State const &s) const {
-    return 0;
+inline int ST_uniform_cost_search::heuristicFunc(State const& s) const {
+    return distanceFunc(s, goalState);
 }
 
 const std::vector<State> ST_uniform_cost_search::succFunc(State const &state) const {
@@ -86,19 +101,18 @@ const std::vector<State> ST_uniform_cost_search::succFunc(State const &state) co
                 if (i != state.getId()) {
                     int x, y;
                     ST::unzipCoordinates(i, x, y);
-                    cout << "dodan skok: (" << x << "," << y << ")" << endl;
+                    //cout << "dodan skok: (" << x << "," << y << ")" << endl;
                     container.push_back(State(i));
                 }
-            cout << "shuttle/teleports" << endl;
+            //cout << "shuttle/teleports" << endl;
             break;
         }
     }
 
-    cout << container.size() << endl;
+    //cout << container.size() << endl;
 
-    cout << "press key" << endl;
-    getch();
-    getch();
+    //cout << "press key" << endl;
+    //getchar();
     return container;
 }
 

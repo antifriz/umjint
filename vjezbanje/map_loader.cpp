@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <sstream>
-#include <stdlib.h>
 #include <iostream>
 #include <vector>
 
@@ -13,7 +12,7 @@
 #include "star_trek_defs.h"
 
 
-void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& transitions, int &initialId) {
+void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& transitions, int& initialId, State& goalState) {
     using namespace std;
 
     ifstream mapConfigFile;
@@ -77,6 +76,7 @@ void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::
                         row.push_back(CONTROL_BRIDGE);
                         break;
                     case 'C':
+                        goalState = State(ST::zipCoordinates(row.size(), map.size()));
                         row.push_back(MEETING_PLACE);
                         break;
                     default:

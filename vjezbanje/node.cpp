@@ -25,9 +25,14 @@ void Node::pathReconstruction(NodePtr const &leaf, stack<NodePtr> &nodeStack) {
     }
 }
 
+void Node::print_w_depth() const {
+    int x, y;
+    ST::unzipCoordinates(this->getState().getId(), x, y);
+    cout << string((unsigned int) this->getCurrentCost(), ' ') << "(" << y + 1 << "," << x + 1 << ") " << this->getCurrentCost() << endl;
+}
+
 void Node::print() const {
     int x, y;
     ST::unzipCoordinates(this->getState().getId(), x, y);
-    cout << string((unsigned int) this->getCurrentCost(), ' ') << "(" << x << "," << y << ") " << this->getCurrentCost() << endl;
+    cout << "(" << y + 1 << "," << x + 1 << ")";
 }
-

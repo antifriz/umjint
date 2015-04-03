@@ -16,11 +16,11 @@
 
 class ST {
 public:
-    inline static zipCoordinates(int x, int y) {
+    inline static int zipCoordinates(int x, int y) {
         return (x << 16) + y;
     }
 
-    inline static unzipCoordinates(int z, int &x, int &y) {
+    inline static void unzipCoordinates(int z, int& x, int& y) {
         x = z >> 16;
         y = z & 0xFF;
     }

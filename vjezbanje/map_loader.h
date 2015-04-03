@@ -7,7 +7,8 @@
 
 #include <string>
 #include <vector>
+#include "state.h"
 
-void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& vector, int & initialId);
+void loadMapFromFile(std::string path, std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& vector, int& initialId, State& goalStatex);
 
 #endif //_SEARCH_MAP_LOADER_H_

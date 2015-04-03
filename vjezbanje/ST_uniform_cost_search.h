@@ -17,6 +17,8 @@ private:
 
     int initialId;
 
+    State goalState = State(0);
+
     int mapHalfSize;
 
 
