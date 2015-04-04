@@ -38,24 +38,6 @@ public:
 
     static void pathReconstruction(NodePtr const &leaf, std::stack<NodePtr> &nodeStack);
 
-    /*    static void pathPrint(stack<NodePtr> &nodeStack) {
-        NodePtr node;
-
-        while (!nodeStack.empty()) {
-            node = nodeStack.top();
-            nodeStack.pop();
-            node->print();
-        }
-    }*/
-
-/*
-    class Compare {
-    public:
-        inline bool operator()(NodePtr a, NodePtr b) {
-            return *a < *b;
-        }
-    };*/
-
     inline int getCurrentCost() const {
         return current_cost;
     }
@@ -71,8 +53,6 @@ public:
     inline int getEstimatedCost() const {
         return estimated_cost;
     }
-
-    void print_w_depth() const;
 };
 
 

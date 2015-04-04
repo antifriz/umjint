@@ -20,9 +20,16 @@ public:
         return (x << 16) + y;
     }
 
+    inline static int unzipY(int z) {
+        return z & 0xFF;
+    }
+    inline static int unzipX(int z) {
+        return z >> 16;
+    }
+
     inline static void unzipCoordinates(int z, int& x, int& y) {
-        x = z >> 16;
-        y = z & 0xFF;
+        x = unzipX(z);
+        y = unzipY(z);
     }
 };
 

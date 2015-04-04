@@ -8,6 +8,7 @@
 #include "node.h"
 
 #include <set>
+#include <vector>
 
 
 class GeneralSearchAlgorithm {
@@ -56,10 +57,6 @@ public:
             return *b < *a;
         }
     };
-
-    GeneralSearchAlgorithm() : openNodeCount(0) {
-    }
-
 };
 
 
