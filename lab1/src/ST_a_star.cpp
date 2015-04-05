@@ -14,8 +14,9 @@ using namespace std;
 
 ST_a_star::ST_a_star(std::string path) {
     loadMapFromFile(path);
-
+#ifdef HEUR2
     setupManhattanDistanceOverTransporters();
+#endif
 }
 
 void ST_a_star::run() {
@@ -24,9 +25,6 @@ void ST_a_star::run() {
 
     cout << "Minimal cost: " << n->getCurrentCost() << endl;
     cout << "Opened nodes: " << getOpenNodeCount() << endl;
-
-
-    //cout << (n ? "OK" : "NOT OK") << endl;
 
 
     stack<NodePtr> stack;
@@ -39,33 +37,28 @@ void ST_a_star::run() {
             cout << " ->";
         cout << endl;
     }
-    //cout << this->getOpenNodeCount() << endl;
 }
 
 int ST_a_star::distanceFunc(State const& a, State const& b) const {
     int xa, ya, xb, yb;
     fromState(a, xa, ya);
     fromState(b, xb, yb);
-    int manhattan_dist = abs(xb - xa) + abs(yb - ya);
+    int manhattan_dist = getManhattanDistance(xa, ya, xb, yb);
 
-    //cout << "height (" << xa << "," << ya << ") - (" << xb << "," << yb << "): " << getHeight(xa, ya) << " " << getHeight(xb, yb) << " " << manhattan_dist << endl;
-
-    if (manhattan_dist == 1) return getManhattanDistance(xa, ya, xb, yb);
+    if (manhattan_dist == 1) return getHeightDistance(xa, ya, xb, yb);
     if (isShuttle(xa, ya)) manhattan_dist *= 3;
     return manhattan_dist;
 }
 
 inline int ST_a_star::heuristicFunc(State const& s) const {
-#if defined(HEUR1)
-    cout<<"2a"<<endl; 
-        return distanceFunc(s, goalState);
-#elif defined(HEUR2)
+#ifdef HEUR1
+    return distanceFunc(s, goalState);
+#endif
+#ifdef HEUR2
+    return ST::unzipX(s.getId()) >= mapHalfSize ? getManhattanDistance(s.getId(), goalState.getId()) : getManhattanDistanceOverTransporter(s.getId(), false);
 
-    cout<<"2b"<<endl;
-    return getManhattanDistanceOverTransporter(s.getId(), ST::unzipX(s.getId()) >= mapHalfSize);
-#else
-
-    cout<<"1"<<endl;
+#endif
+#ifdef UNIFORM
     return 0;
 #endif
 }
@@ -73,64 +66,41 @@ inline int ST_a_star::heuristicFunc(State const& s) const {
 const std::vector<State> ST_a_star::succFunc(State const& state) const {
     int x0, y0;
     fromState(state, x0, y0);
-
     vector<State> container;
 
-    // shuttles 'n' teleports
-
-    //int iter = 0;
-    for (auto v: transitions) {
-/*        cout << iter++ << " -> ";
-        for (auto i: v) {
-            int x, y;
-            ST::unzipCoordinates(i, x, y);
-            cout << "(" << x << "," << y << "), ";
-        }
-        cout << endl;*/
-        if (find(v.begin(), v.end(), state.getId()) != v.end()) {
-            for (auto i: v)
-                if (i != state.getId()) {
-                    int x, y;
-                    ST::unzipCoordinates(i, x, y);
-                    //cout << "dodan skok: (" << x << "," << y << ")" << endl;
-                    container.push_back(State(i));
-                }
-            //cout << "shuttle/teleports" << endl;
-            break;
-        }
-    }
-
-
+    // transition
+    if (x0 < mapHalfSize)
+        for (auto v: transitions)
+            if (find(v.begin(), v.end(), state.getId()) != v.end()) {
+                for (auto i: v)
+                    if (i != state.getId()) {
+                        int x, y;
+                        ST::unzipCoordinates(i, x, y);
+                        container.push_back(State(i));
+                    }
+                break;
+            }
 
     // right
     if (x0 != (mapHalfSize - 1) && x0 != ((mapHalfSize << 1) - 1)) {
-        //cout << "right" << endl;
         container.push_back(toState(x0 + 1, y0));
     }
 
     // down
     if (y0 != ((mapHalfSize << 1) - 1)) {
-        //cout << "down" << endl;
         container.push_back(toState(x0, y0 + 1));
     }
 
     // up
     if (y0 != 0) {
-        //cout << "up" << endl;
         container.push_back(toState(x0, y0 - 1));
     }
 
     // left
     if (x0 != 0 && x0 != mapHalfSize) {
-        //cout << "left" << endl;
         container.push_back(toState(x0 - 1, y0));
     }
 
-
-    //cout << container.size() << endl;
-
-    //cout << "press key" << endl;
-    //getchar();
     return container;
 }
 
@@ -158,8 +128,6 @@ void ST_a_star::loadMapFromFile(std::string path) {
     while (getline(mapConfigFile, line)) {
 
         vector<int> row;
-
-        //cout << line << endl;
 
         istringstream iss(line);
         do {
@@ -191,7 +159,7 @@ void ST_a_star::loadMapFromFile(std::string path) {
                         int idx = atoi(sub.c_str());
 
                         int offset = TELEPORT_TRANSITION_OFFSET + idx;
-                        if ((int)transitions.size() <= offset)
+                        if ((int) transitions.size() <= offset)
                             transitions.resize((unsigned int) (offset + 1));
                         transitions[offset].push_back(ST::zipCoordinates((int) row.size(), (int) map.size()));
 
@@ -237,13 +205,13 @@ void ST_a_star::setupManhattanDistanceOverTransporters() {
     for (auto& transition: transitions)
         if (i++ >= TELEPORT_TRANSITION_OFFSET)
             for (auto& transporter: transition)
-                if (mapHalfSize > ST::unzipY(transporter))
+                if (mapHalfSize <= ST::unzipX(transporter))
                     adrelTransporters.insert(make_pair(transporter, getManhattanDistance(transporter, goalState.getId())));
                 else
                     enterpriseTransporters.insert(make_pair(transporter, 0));
 
     for (auto& transporter: enterpriseTransporters)
-        transporter.second=getManhattanDistanceOverTransporter(transporter.first, true);
+        transporter.second = getManhattanDistanceOverTransporter(transporter.first, true);
 }
 
 int ST_a_star::getManhattanDistanceOverTransporter(int fromId, bool adrelOnes) const {
@@ -251,8 +219,9 @@ int ST_a_star::getManhattanDistanceOverTransporter(int fromId, bool adrelOnes) c
 
 
     int fromDist = INT32_MAX;
-    for (auto& transporter: adrelOnes?adrelTransporters:enterpriseTransporters) {
-        int adrelDist = fromDist;
+    for (auto& transporter: adrelOnes ? adrelTransporters : enterpriseTransporters) {
+
+        int adrelDist = transporter.second;
         int interDist = getManhattanDistance(fromId, transporter.first);
         int dist = interDist + adrelDist;
         if (dist < fromDist) {
@@ -262,5 +231,6 @@ int ST_a_star::getManhattanDistanceOverTransporter(int fromId, bool adrelOnes) c
                 break;
         }
     }
+
     return fromDist;
 }

@@ -14,31 +14,15 @@ NodePtr GeneralSearchAlgorithm::search(int initialStateId) {
 
     open.insert(generateInitialNode(initialStateId));
 
-    for (openNodeCount = 0;!open.empty();++openNodeCount) {
-/*        for(auto& nn :open)
-        {
-            nn->print();
-            cout<<" "<<nn->getEstimatedCost()<<", ";
-        }
-        cout<<endl;*/
+    for (openNodeCount = 0; !open.empty(); ++openNodeCount) {
         NodePtr n = removeHead(open);
-
-/*        if(n->getParent())
-        n->getParent()->print();
-        n->print_w_depth();*/
 
         if (goalFunc(n->getState())) return n;
         closed.insert(n);
 
         for (auto& m: expand(n))
-        /*{
-            m->print();cout<<endl;*/
             if (!seenBetterState(m, open) && !seenBetterState(m, closed))
                 open.insert(m);
-/*            else
-                cout<<"seen"<<endl;
-
-        }*/
     }
 
     return nullptr;

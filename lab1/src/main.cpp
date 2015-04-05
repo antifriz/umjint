@@ -14,14 +14,15 @@ void runSearch(string s){
     cout<<endl;
 }
 
-int main() {
-
+int main(int argc,char * argv[]) {
     NodePtr node;
 
     runSearch("res/konfiguracija1.txt");
     runSearch("res/konfiguracija2.txt");
     runSearch("res/konfiguracija3.txt");
+    runSearch("res/konfiguracija4.txt");
+    runSearch("res/konfiguracija5.txt");
+    runSearch("res/konfiguracija6.txt");
 
-    //cout << "fin" << endl;
     return 0;
 }

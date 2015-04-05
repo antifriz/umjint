@@ -10,6 +10,7 @@
 #include "star_trek_defs.h"
 #include <map>
 
+
 class ST_a_star : public GeneralSearchAlgorithm {
 private:
     std::vector<std::vector<int>> map;
@@ -24,7 +25,6 @@ private:
 
     std::map<int, int> adrelTransporters;
     std::map<int, int> enterpriseTransporters;
-
 
     void loadMapFromFile(std::string path);
 
@@ -61,6 +61,11 @@ public:
     void run();
 
     inline int getManhattanDistance(int xa, int ya, int xb, int yb) const {
+        return abs(xb - xa) + abs(yb - ya);
+
+    }
+
+    inline int getHeightDistance(int xa, int ya, int xb, int yb) const {
         return abs(getHeight(xa, ya) - getHeight(xb, yb));
 
     }
