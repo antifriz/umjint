@@ -47,12 +47,13 @@ int ST_a_star::distanceFunc(State const& a, State const& b) const {
 
     if (manhattan_dist == 1) return getHeightDistance(xa, ya, xb, yb);
     if (isShuttle(xa, ya)) manhattan_dist *= 3;
+    
     return manhattan_dist;
 }
 
 inline int ST_a_star::heuristicFunc(State const& s) const {
 #ifdef HEUR1
-    return distanceFunc(s, goalState);
+    return getManhattanDistance(s.getId(), goalState.getId());
 #endif
 #ifdef HEUR2
     return ST::unzipX(s.getId()) >= mapHalfSize ? getManhattanDistance(s.getId(), goalState.getId()) : getManhattanDistanceOverTransporter(s.getId(), false);
@@ -72,6 +73,7 @@ const std::vector<State> ST_a_star::succFunc(State const& state) const {
     if (x0 < mapHalfSize)
         for (auto v: transitions)
             if (find(v.begin(), v.end(), state.getId()) != v.end()) {
+                
                 for (auto i: v)
                     if (i != state.getId()) {
                         int x, y;
@@ -80,7 +82,6 @@ const std::vector<State> ST_a_star::succFunc(State const& state) const {
                     }
                 break;
             }
-
     // right
     if (x0 != (mapHalfSize - 1) && x0 != ((mapHalfSize << 1) - 1)) {
         container.push_back(toState(x0 + 1, y0));

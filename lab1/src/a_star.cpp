@@ -8,6 +8,8 @@
 using namespace std;
 
 
+
+
 NodePtr GeneralSearchAlgorithm::search(int initialStateId) {
     set<NodePtr, Comparator> open;
     set<NodePtr> closed;
@@ -15,6 +17,7 @@ NodePtr GeneralSearchAlgorithm::search(int initialStateId) {
     open.insert(generateInitialNode(initialStateId));
 
     for (openNodeCount = 0; !open.empty(); ++openNodeCount) {
+       
         NodePtr n = removeHead(open);
 
         if (goalFunc(n->getState())) return n;
@@ -23,7 +26,7 @@ NodePtr GeneralSearchAlgorithm::search(int initialStateId) {
         for (auto& m: expand(n))
             if (!seenBetterState(m, open) && !seenBetterState(m, closed))
                 open.insert(m);
-    }
+            }
 
     return nullptr;
 }
