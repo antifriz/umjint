@@ -23,6 +23,8 @@ int main(int argc,char * argv[]) {
     runSearch("res/konfiguracija4.txt");
     runSearch("res/konfiguracija5.txt");
     runSearch("res/konfiguracija6.txt");
+    runSearch("res/konfiguracija7.txt");
+    runSearch("res/konfiguracija8.txt");
 
     return 0;
 }
