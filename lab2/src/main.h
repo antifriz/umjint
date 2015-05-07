@@ -5,10 +5,6 @@
 #ifndef PROJECT_MAIN_H
 #define PROJECT_MAIN_H
 
-#include <stdio.h>
-#include <iostream>
-#include <bits/ostream.tcc>
-#include <ostream>
 
 #define existsInContainer(container, value) ((container).find(value) != (container).end())
 #define printMe(str) std::cout<<str<<std::endl
@@ -25,13 +21,6 @@
 #define ntimes(n) ntimesi(n)
 #define iterate(container) for(auto it = (container).begin();it!=(container).end();it++)
 enum Property { Glow, Breeze, Stench, Teleport, Pit, Wumpus };
-
-class ComparatorPricierPoint {
-    public:
-    bool operator()(const Point &a, const Point &b) {
-        return (a.x * 10 + a.y) > (b.x * 10 + b.y);
-    }
-};
 
 
 #endif //PROJECT_MAIN_H

@@ -5,6 +5,8 @@
 #ifndef PROJECT_POINT_ATOM_H
 #define PROJECT_POINT_ATOM_H
 
+#include "main.h"
+
 class PointAtom {
 private:
     Property _property;

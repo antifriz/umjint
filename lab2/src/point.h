@@ -38,12 +38,5 @@ public:
     }
 };
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
-#include <set>
 
 #endif //PROJECT_POINT_H

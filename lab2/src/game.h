@@ -5,6 +5,20 @@
 #ifndef PROJECT_GAME_H
 #define PROJECT_GAME_H
 
+#include "point_atom.h"
+#include "board.h"
+#include "knowledge_base.h"
+
+class ComparatorPricierPoint {
+    public:
+    bool operator()(const Point
+    &a,
+    const Point
+    &b) {
+        return (a.x * 10 + a.y) > (b.x * 10 + b.y);
+    }
+};
+
 class Game {
     typedef PointAtom Atom;
 
@@ -19,24 +33,10 @@ public:
     Game() : _board(), _position(1, 1), _wumpusFound(false) {
     }
 
-    void load(std::string path) {
-        _board.load(path);
-        _position = Point(1, 1);
-        _wumpusFound = false;
-    }
+    void load(std::string path);
 
-    void initialPremisesAbout(Point p, const std::vector<Point> &world) {
-        // todo: if not seen as adjacent
-
-        createRuleForNeighbours<false, Stench, false, Wumpus>(p);
-        createRuleForNeighbours<false, Breeze, false, Pit>(p);
-        createRuleForNeighbours<false, Glow, false, Teleport>(p);
-
-        // wumpus at point
-        foreach(pt, world)
-            if (p != pt)
-                _knowledgeBase.addClause(Clause<Atom>(false, Atom(Wumpus, p), false, Atom(Wumpus, pt)));
-    }
+    void initialPremisesAbout(Point p, const std::vector <Point>
+    &world);
 
     template<bool tPoint, Property pPoint, bool tNeighbour, Property pNeighbour>
     void createRuleForNeighbours(Point p) {
@@ -45,114 +45,30 @@ public:
         _knowledgeBase.addClause(c);
     }
 
-    void run() {
-        //foreach(p, _board.getAllPoints())
-        //    initialPremisesAbout(p,_board.getAllPoints());
-
-        while (!ended()) {
-            _position.print();
-            std::cout << std::endl;
-            step();
-            break;
-        }
-    }
+    void run();
 
 
-    bool wumpusFound() {
-        if (!_wumpusFound) return false;
-        _wumpusFound = true;
-        return true;
-    }
+    bool wumpusFound();
 
-    void deduceAndAdd(Point point, Property property) {
-        _knowledgeBase.deduceAndAdd(Atom(property, point));
-    }
+    void deduceAndAdd(Point point, Property property);
 
-    bool check(Point point, bool prefix, Property property) {
-        return _knowledgeBase.clauseExists(Clause<Atom>(prefix, Atom(property, point)));
-    }
+    bool check(Point point, bool prefix, Property property);
 
-    bool unknown(Point point, Property property) {
-        return !check(point, true, property) && !check(point, false, property);
-    }
+    bool unknown(Point point, Property property);
 
-    void step() {
+    void step();
 
+    void moveTo(Point const
+    &point);
 
-        auto &&neighbours = _board.getNeighbours(_position);
+    void move();
 
-        initialPremisesAbout(_position, _board.getAllPoints());
+    bool hasSafe();
 
+    void addSafe(const Point
+    &point);
 
-        foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt, _board.getAllPoints());
-
-
-        addPositionUnaryPremise<false, Pit>();
-        addPositionUnaryPremise<false, Teleport>();
-        addPositionUnaryPremise<false, Wumpus>();
-
-
-        if (at<Glow>()) addPositionUnaryPremise<true, Glow>();
-        if (at<Breeze>()) addPositionUnaryPremise<true, Breeze>();
-        if (at<Stench>()) addPositionUnaryPremise<true, Stench>();
-
-        if (atSafe()) addSafe(_position);
-
-
-        ntimes(neighbours.size())foreach(neighbourPt, neighbours) {
-                deduceAndAdd(neighbourPt, Teleport);
-
-                if (check(neighbourPt, true, Teleport)) {
-                    moveTo(neighbourPt);
-                    return;
-                }
-
-                deduceAndAdd(neighbourPt, Pit);
-                deduceAndAdd(neighbourPt, Wumpus);
-
-                //updateWumpusInfo(neighbourPt);
-
-                // redundant if(_knowledgeBase.check(neighbour,false,Teleport))
-                if (check(neighbourPt, false, Wumpus)) if (check(neighbourPt, false, Pit))
-                    addSafe(neighbourPt);
-
-                if (unknown(neighbourPt, Wumpus) || unknown(neighbourPt, Pit)) if (!check(neighbourPt, true, Wumpus) &&
-                                                                                   !check(neighbourPt, true,
-                                                                                          Pit));//addUnknown(neighbourPt);
-
-            }
-        move();
-    }
-
-    void moveTo(Point const &point) {
-        _position = point;
-    }
-
-    void move() {
-        if (!hasSafe()) {
-            moveTo(nextSafe());
-        } else
-            assert("jej");
-
-
-    }
-
-    bool hasSafe() {
-        return _safe.empty();
-    }
-
-    void addSafe(const Point &point) {
-        printMe("addedSafe:");
-        point.print();
-        endline();
-        _safe.push(point);
-    }
-
-    Point nextSafe() {
-        Point p(_safe.top());
-        _safe.pop();
-        return p;
-    }
+    Point nextSafe();
 
 /*    void updateWumpusInfo(Point point) {
         if (!check(point, true, Wumpus)) return;
@@ -187,45 +103,13 @@ public:
         return _board.is<property>(_position);
     }
 
-    bool atSafe() {
-        return !at<Breeze>() && !at<Stench>();
-    }
+    bool atSafe();
 
 
-    bool ended() {
-        if (at<Teleport>()) {
-            printMe("Pikard se spasio, pronasao je teleporter :)");
-            return true;
-        }
-        if (at<Wumpus>()) {
-            printMe("Pikarda je ubio Wumpus :(, tko god to bio ?!");
-            return true;
-        }
-        if (at<Pit>()) {
-            printMe("Pikard je pao u jamu i umro :(");
-            return true;
-        }
-        return false;
-    }
+    bool ended();
 
-    void printBoard() {
-        _board.print();
-    }
+    void printBoard();
 };
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
-#include <set>
-#include <iostream>
-#include "point.h"
-#include "point_atom.h"
-#include "board.h"
-#include "literal.h"
-#include "clause.h"
-#include "knowledge_base.h"
 
 #endif //PROJECT_GAME_H

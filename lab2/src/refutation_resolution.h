@@ -9,27 +9,10 @@
 // Created by ivan on 5/6/15.
 //
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-
-#include <boost/algorithm/string.hpp>
-
-#include <fstream>
 
 
-#include <set>
-#include <ostream>
-#include <iostream>
-#include <bits/stl_queue.h>
-#include "point_atom.h"
-#include "field_data.h"
-#include "board.h"
-#include "literal.h"
-#include "clause.h"
 #include "knowledge_base.h"
-
+#include "main.h"
 
 template<typename Atom>
 class RefutationResolution {

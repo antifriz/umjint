@@ -5,6 +5,8 @@
 #ifndef PROJECT_FIELD_DATA_H
 #define PROJECT_FIELD_DATA_H
 
+#include "main.h"
+
 class FieldData {
 public:
     FieldData(bool isStench, bool isBreeze, bool isGlow, bool isWumpus, bool isPit, bool isTeleport) : isStench(
@@ -30,15 +32,7 @@ public:
         }
     }
 
-    void print() const {
-        char c = '_';
-        int i = 0;
-        if (isStench) i += 0x1;
-        if (isBreeze) i += 0x10;
-        if (isGlow) i += 0x100;
-        if (isWumpus) c = 'W'; else if (isPit) c = 'P'; else if (isTeleport) c = 'T';
-        printf("%c ", c);
-    }
+    void print() const;
 
 private:
     bool isStench;

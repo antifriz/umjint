@@ -5,6 +5,8 @@
 #ifndef PROJECT_BOARD_H
 #define PROJECT_BOARD_H
 
+#include "main.h"
+
 class Board {
 private:
     std::vector<FieldData> _fields;
