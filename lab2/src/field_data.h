@@ -26,7 +26,7 @@ public:
             case Property::Pit:
                 return isPit;
             case Property::Teleport:
-                return isStench;
+                return isTeleport;
             default:
                 throw "Invalid property";
         }

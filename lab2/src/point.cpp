@@ -21,7 +21,3 @@ bool Point::operator<(const Point &other) const {
     if (other.x < x) return false;
     return y < other.y;
 }
-
-Point Point::operator=(const Point &p) {
-    return Point(p);
-}

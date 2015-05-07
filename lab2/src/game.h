@@ -29,6 +29,7 @@ private:
     Point _position;
     KnowledgeBase<Atom> _knowledgeBase;
     std::priority_queue<Point, std::vector<Point>, ComparatorPricierPoint> _safe;
+    std::priority_queue<Point, std::vector<Point>, ComparatorPricierPoint> _unknown;
     std::set<Point> _visited;
     bool _wumpusFound;
 public:
@@ -111,6 +112,12 @@ public:
     bool ended();
 
     void printBoard();
+
+    void addUnknown(Point const &point);
+
+    bool hasUnknown();
+
+    Point nextUnknown();
 };
 
 

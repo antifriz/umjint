@@ -66,7 +66,7 @@ public:
 
             wkb.addClause(clause1);
         }
-        printMe("Nije istina");
+        // printMe("Nije istina");
         return false;
     }
 

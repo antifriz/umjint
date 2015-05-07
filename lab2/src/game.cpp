@@ -3,7 +3,6 @@
 //
 
 #include "game.h"
-#include <assert.h>
 
 void Game::load(std::string path) {
     _board.load(path);
@@ -31,7 +30,8 @@ void Game::run() {
         _position.print();
         std::cout << std::endl;
         step();
-        break;
+
+        //break;
     }
 }
 
@@ -73,12 +73,12 @@ void Game::step() {
     if (at<Breeze>()) addPositionUnaryPremise<true, Breeze>();
     if (at<Stench>()) addPositionUnaryPremise<true, Stench>();
 
-    if (atSafe()) addSafe(_position);
+    //if (atSafe()) addSafe(_position);
 
     //_knowledgeBase.print();
     //endline();
 
-    ntimes(neighbours.size())
+    //ntimes(neighbours.size())
         foreach(neighbourPt, neighbours) {
             deduceAndAdd(neighbourPt, Teleport);
 
@@ -100,36 +100,60 @@ void Game::step() {
 
         if (unknown(neighbourPt, Wumpus) || unknown(neighbourPt, Pit)) if (!check(neighbourPt, true, Wumpus) &&
                                                                            !check(neighbourPt, true, Pit))
-            printMe("undefined");//addUnknown(neighbourPt);
+            addUnknown(neighbourPt);
     }
 
 
     move();
-    _visited.insert(_position);
+    //_visited.insert(_position);
 }
 
 void Game::moveTo(Point const &point) {
+    std::cout << "moved to: ";
+    point.print();
+    endline();
+    endline();
     _position = point;
+
 }
 
 void Game::move() {
-    if (!hasSafe()) {
+    if (hasSafe()) {
+        printMe("safe move");
         moveTo(nextSafe());
-    } else
-        assert("jej");
 
+    } else if (hasUnknown()) {
+        printMe("unknown move");
+
+        moveTo(nextUnknown());
+
+    } else {
+        printMe("predah se");
+        exit(0);
+    }
 
 }
 
 void Game::addSafe(const Point &point) {
-    printMe("addedSafe:");
-    point.print();
-    endline();
     _safe.push(point);
 }
 
+void Game::addUnknown(const Point &point) {
+    _unknown.push(point);
+}
+
 bool Game::hasSafe() {
-    return _safe.empty();
+    return !_safe.empty();
+}
+
+bool Game::hasUnknown() {
+    return !_unknown.empty();
+}
+
+Point Game::nextUnknown() {
+    Point p(_unknown.top());
+    _unknown.pop();
+    return p;
 }
 
 Point Game::nextSafe() {

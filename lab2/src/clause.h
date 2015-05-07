@@ -35,7 +35,7 @@ public:
         addLiteral(_prefix, _label);
     }
 
-    Literal<Atom> prepareForBind(Clause<Atom> const &other) const {
+    Literal<Atom> getBindingLiteral(Clause<Atom> const &other) const {
         auto it1 = _literalSet.begin();
         auto it2 = other._literalSet.begin();
         for (; it1 != _literalSet.end(); it1++) {

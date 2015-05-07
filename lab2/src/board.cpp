@@ -9,7 +9,7 @@
 
 void Board::print() const {
     ntimesy(height)ntimesx(width) {
-            _fields[height * y + x].print();
+            _fields[height * x + y].print();
             if (x == width - 1) std::cout << std::endl;
         }
 }
@@ -46,7 +46,13 @@ void Board::load(std::string path) {
 }
 
 const FieldData &Board::getData(const Point &point) const {
-    return _fields.at((unsigned long) ((point.x - 1) * height + point.y - 1));
+    assert(point.x >= 1);
+    assert(point.y >= 1);
+    assert(point.y <= width);
+    assert(point.y <= height);
+    auto val = ((point.x - 1) * height + point.y - 1);
+    printMe(val);
+    return _fields.at((unsigned long) val);
 }
 
 std::vector<Point> Board::getNeighbours(const Point &position) const {

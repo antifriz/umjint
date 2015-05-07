@@ -10,12 +10,11 @@
 class Point {
 public:
 
-    const int x;
-    const int y;
+    int x;
+    int y;
 
     Point(const int &x, const int &y) : x(x), y(y) { }
 
-    Point operator=(const Point &p);
 
     bool operator<(const Point &other) const;
 
