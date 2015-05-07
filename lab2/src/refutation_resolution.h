@@ -39,7 +39,7 @@ public:
             sos.pop();
 
             foreach(clause2, premiseSet) {
-                auto literal = clause1.prepareForBind(clause2);
+                auto literal = clause1.getBindingLiteral(clause2);
 
                 if (literal.isNull()) continue;
 
