@@ -5,8 +5,13 @@
 #ifndef PROJECT_KNOWLEDGE_BASE_H
 #define PROJECT_KNOWLEDGE_BASE_H
 
+#include <iostream>
+#include "main.h"
+#include "clause.h"
+#include "refutation_resolution.h"
+
 template<typename Atom>
-class KnowledgeBase;
+class RefutationResolution;
 
 template<typename Atom>
 class KnowledgeBase {
@@ -37,6 +42,7 @@ public:
         _clauseSet.insert(clause);
     }
 
+
     template<typename... Args>
     void addClause(const Clause<Atom> &clause, Args... args) {
         addClause(clause);
@@ -48,6 +54,7 @@ public:
         return _clauseSet.find(clause) != _clauseSet.end();
     }
 
+
     void deduceAndAdd(const Atom &atom) {
         auto negClauseT = Clause<Atom>(true, atom);
         auto negClauseF = Clause<Atom>(false, atom);
@@ -58,15 +65,5 @@ public:
     }
 };
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
-#include <set>
-#include <iostream>
-#include "literal.h"
-#include "clause.h"
 
 #endif //PROJECT_KNOWLEDGE_BASE_H

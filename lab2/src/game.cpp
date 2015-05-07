@@ -3,6 +3,7 @@
 //
 
 #include "game.h"
+#include <assert.h>
 
 void Game::load(std::string path) {
     _board.load(path);

@@ -5,6 +5,8 @@
 #ifndef PROJECT_LITERAL_H
 #define PROJECT_LITERAL_H
 
+#include <iostream>
+
 template<typename Atom>
 class Literal final {
 private:
@@ -14,7 +16,7 @@ public:
 
     Literal(bool _prefix, const Atom &_atom) : _prefix(_prefix), _atom(_atom) { }
 
-    inline void togglePrefix() { _prefix ^= 1; }
+    void togglePrefix() { _prefix ^= 1; }
 
     Literal getNegated() const {
         Literal copied(*this);
@@ -37,13 +39,5 @@ public:
     }
 };
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
-#include <set>
-#include <iostream>
 
 #endif //PROJECT_LITERAL_H

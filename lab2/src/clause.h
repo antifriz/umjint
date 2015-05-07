@@ -5,6 +5,11 @@
 #ifndef PROJECT_CLAUSE_H
 #define PROJECT_CLAUSE_H
 
+#include <set>
+#include "main.h"
+#include "literal.h"
+
+
 template<typename Atom>
 class Clause final {
 private:
@@ -55,21 +60,14 @@ public:
         addLiteral(first);
     }
 
-    void print() const {
-        auto cnt = _literalSet.size();
-        std::cout << "( ";
-        foreach(literal, _literalSet) {
-            literal.print();
-            if (--cnt > 0) std::cout << " or ";
-        }
-        std::cout << " )";
-    }
+    void print() const;
 
     void addLiteral(const Literal<Atom> &literal) {
         if (existsInContainer(_literalSet, literal.getNegated()))
             _isTautology = true;
         _literalSet.insert(literal);
     }
+
 
     void addLiteral(bool _prefix, const Atom &_label) {
         addLiteral(Literal<Atom>(_prefix, _label));
@@ -113,17 +111,8 @@ public:
         return c;
     }
 
-    bool isNull() const { return getLiteralCount() == 0; };
+    bool isNull() const { return getLiteralCount() == 0; }
 };
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
-#include <set>
-#include <iostream>
-#include "literal.h"
 
 #endif //PROJECT_CLAUSE_H

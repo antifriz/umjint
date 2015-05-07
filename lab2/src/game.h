@@ -8,7 +8,8 @@
 #include "point_atom.h"
 #include "board.h"
 #include "knowledge_base.h"
-
+#include "clause.h"
+#include <queue>
 class ComparatorPricierPoint {
     public:
     bool operator()(const Point

@@ -44,6 +44,5 @@ private:
 
 };
 
-#include <string>
 
 #endif //PROJECT_FIELD_DATA_H

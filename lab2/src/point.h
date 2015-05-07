@@ -5,6 +5,8 @@
 #ifndef PROJECT_POINT_H
 #define PROJECT_POINT_H
 
+#include <iostream>
+
 class Point {
 public:
 
@@ -13,29 +15,15 @@ public:
 
     Point(const int &x, const int &y) : x(x), y(y) { }
 
-    Point operator=(const Point &p) {
-        return Point(p);
-    }
+    Point operator=(const Point &p);
 
+    bool operator<(const Point &other) const;
 
-    bool operator<(const Point &other) const {
-        if (x < other.x) return true;
-        if (other.x < x) return false;
-        return y < other.y;
-    }
+    bool operator!=(const Point &other) const;
 
-    bool operator!=(const Point &other) const {
-        return !(*this == other);
-    }
+    bool operator==(const Point &other) const;
 
-    bool operator==(const Point &other) const {
-        return x == other.x && y == other.y;
-    }
-
-
-    void print() const {
-        std::cout << "(" << x << "," << y << ")";
-    }
+    void print() const;
 };
 
 

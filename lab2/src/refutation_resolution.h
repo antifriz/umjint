@@ -13,6 +13,12 @@
 
 #include "knowledge_base.h"
 #include "main.h"
+#include "point_atom.h"
+
+#include <queue>
+
+template<typename Atom>
+class KnowledgeBase;
 
 template<typename Atom>
 class RefutationResolution {
@@ -60,10 +66,7 @@ public:
         return false;
     }
 
-
 };
-
-
 
 
 #endif //PROJECT_REFUTATION_RESOLUTION_H

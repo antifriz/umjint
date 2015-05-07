@@ -2,13 +2,16 @@
 // Created by ivan on 5/7/15.
 //
 
+#include <fstream>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include "board.h"
 
 void Board::print() const {
     ntimesy(height)ntimesx(width) {
-        _fields[height * y + x].print();
-        if (x == width - 1) std::cout << std::endl;
-    }
+            _fields[height * y + x].print();
+            if (x == width - 1) std::cout << std::endl;
+        }
 }
 
 std::vector<Point> Board::getAllPoints() {
@@ -26,10 +29,10 @@ void Board::load(std::string path) {
     height = 0;
     while (getline(file, line)) {
         std::vector<std::string> strParts;
-        split(strParts, line, boost::algorithm::is_any_of(" "));
+        boost::algorithm::split(strParts, line, boost::algorithm::is_any_of(" "));
 
         std::vector<std::string> coordinates;
-        split(coordinates, strParts[0], boost::algorithm::is_any_of(","));
+        boost::algorithm::split(coordinates, strParts[0], boost::algorithm::is_any_of(","));
         int x = stoi(coordinates[0].substr(1));
         int y = stoi(coordinates[1]);
 
@@ -44,4 +47,17 @@ void Board::load(std::string path) {
 
 const FieldData &Board::getData(const Point &point) const {
     return _fields.at((unsigned long) ((point.x - 1) * height + point.y - 1));
+}
+
+std::vector<Point> Board::getNeighbours(const Point &position) const {
+    std::vector<Point> neigh;
+    if (position.x > 2)
+        neigh.emplace_back(position.x - 1, position.y);
+    if (position.y > 2)
+        neigh.emplace_back(position.x, position.y - 1);
+    if (position.x + 1 < width)
+        neigh.emplace_back(position.x + 1, position.y);
+    if (position.y + 1 < height)
+        neigh.emplace_back(position.x, position.y + 1);
+    return neigh;
 }

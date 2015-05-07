@@ -6,6 +6,10 @@
 #define PROJECT_BOARD_H
 
 #include "main.h"
+#include <vector>
+
+#include "field_data.h"
+#include "point.h"
 
 class Board {
 private:
@@ -29,31 +33,10 @@ public:
         return getData(point).is<property>();
     }
 
-    std::vector<Point> getNeighbours(const Point &position) const {
-        std::vector<Point> neigh;
-        if (position.x > 2)
-            neigh.emplace_back(position.x - 1, position.y);
-        if (position.y > 2)
-            neigh.emplace_back(position.x, position.y - 1);
-        if (position.x + 1 < width)
-            neigh.emplace_back(position.x + 1, position.y);
-        if (position.y + 1 < height)
-            neigh.emplace_back(position.x, position.y + 1);
-        return neigh;
-    }
+    std::vector<Point> getNeighbours(const Point &position) const;
 
 
 };
 
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <queue>
-#include <boost/algorithm/string.hpp>
-#include <fstream>
-#include <set>
-#include <iostream>
-#include "point.h"
-#include "field_data.h"
 
 #endif //PROJECT_BOARD_H
