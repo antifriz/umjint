@@ -20,7 +20,7 @@ private:
 
 public:
 
-    void print() {
+    void print() const {
         foreach(clause, _clauseSet) {
             clause.print();
             std::cout << std::endl;

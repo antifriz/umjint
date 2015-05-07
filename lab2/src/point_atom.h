@@ -13,6 +13,8 @@ private:
     Property _property;
     Point _point;
 public:
+    PointAtom() : _point(1, 1) { }
+
     PointAtom(Property const &_property, const Point &_point) : _property(_property), _point(_point) { }
 
 

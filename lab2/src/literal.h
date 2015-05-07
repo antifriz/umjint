@@ -6,15 +6,19 @@
 #define PROJECT_LITERAL_H
 
 #include <iostream>
+#include "main.h"
 
 template<typename Atom>
 class Literal final {
 private:
     bool _prefix;
     Atom _atom;
+    bool _null;
 public:
 
-    Literal(bool _prefix, const Atom &_atom) : _prefix(_prefix), _atom(_atom) { }
+    Literal() : _null(true) { }
+
+    Literal(bool _prefix, const Atom &_atom) : _prefix(_prefix), _atom(_atom), _null(false) { }
 
     void togglePrefix() { _prefix ^= 1; }
 
@@ -33,10 +37,15 @@ public:
     }
 
     void print() const {
-        if (!_prefix) std::cout << "( not ";
+
+        if (!_prefix)
+            std::cout << "( not ";
+
         _atom.print();
         if (!_prefix) std::cout << " )";
     }
+
+    bool isNull() { return _null; }
 };
 
 

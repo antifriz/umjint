@@ -35,7 +35,7 @@ public:
         addLiteral(_prefix, _label);
     }
 
-    Clause prepareForBind(Clause<Atom> const &other) {
+    Literal<Atom> prepareForBind(Clause<Atom> const &other) const {
         auto it1 = _literalSet.begin();
         auto it2 = other._literalSet.begin();
         for (; it1 != _literalSet.end(); it1++) {
@@ -43,16 +43,11 @@ public:
 
             for (; it2 != _literalSet.end(); it2++) {
                 if (atom < *it2) break;
-                if (atom == *it2) {
-                    Clause c(*this);
-                    c._literalSet.erase(it1);
-                    return c;
-                };
+                if (atom == *it2) return *it1;
             }
 
         }
-
-        return *this;
+        return Literal < Atom > ();
     }
 
     template<typename... Args>
@@ -60,7 +55,15 @@ public:
         addLiteral(first);
     }
 
-    void print() const;
+    void print() const {
+        auto cnt = _literalSet.size();
+        std::cout << "( ";
+        foreach(literal, _literalSet) {
+            literal.print();
+            if (--cnt > 0) std::cout << " or ";
+        }
+        std::cout << " )";
+    }
 
     void addLiteral(const Literal<Atom> &literal) {
         if (existsInContainer(_literalSet, literal.getNegated()))
@@ -105,9 +108,11 @@ public:
         return _literalSet.size();
     }
 
-    Clause<Atom> bind(const Clause<Atom> &other) const {
-        Clause<Atom> c(*this);
-        foreach(literal, other._literalSet)c.addLiteral(literal);
+    Clause bind(const Clause<Atom> &other, const Literal<Atom> &litToBind) const {
+        Clause<Atom> c;
+        auto litNeg = litToBind.getNegated();
+        foreach(literal, _literalSet) if (!(litToBind == literal))c.addLiteral(literal);
+        foreach(literal, other._literalSet)if (!(litNeg == literal))c.addLiteral(literal);
         return c;
     }
 

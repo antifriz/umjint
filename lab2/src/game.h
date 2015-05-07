@@ -29,6 +29,7 @@ private:
     Point _position;
     KnowledgeBase<Atom> _knowledgeBase;
     std::priority_queue<Point, std::vector<Point>, ComparatorPricierPoint> _safe;
+    std::set<Point> _visited;
     bool _wumpusFound;
 public:
     Game() : _board(), _position(1, 1), _wumpusFound(false) {

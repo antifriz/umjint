@@ -37,32 +37,62 @@ public:
         while (!sos.empty()) {
             Clause<Atom> clause1 = sos.back();
             sos.pop();
+            /*            foreach(item, premiseSet) {
+                           item.print();
+                           endline();
+                       }
+                       endline();
+                       endline();
+                       clause1.print();
+                       endline();
+                       endline();*/
 
             foreach(clause2, premiseSet) {
-                auto newClause = clause1.prepareForBind(clause2);
-                if (newClause.getLiteralCount() == clause1.getLiteralCount()) continue;
+                auto literal = clause1.prepareForBind(clause2);
 
-                newClause.bind(clause2);
+                if (literal.isNull()) continue;
+                printMe("hej");
+
+                auto newClause = clause1.bind(clause2, literal);
+                std::cout << std::endl << " > ";
+                clause1.print();
+                std::cout << std::endl << " + ";
+                clause2.print();
+                std::cout << std::endl << " = ";
+                newClause.print();
+                endline();
 
                 if (newClause.isTautology()) continue;
+                printMe("nije tautologija");
 
-                if (newClause.isNull()) return true;
+
+                if (newClause.isNull()) {
+                    printMe("Istina");
+                    return true;
+                }
+                printMe("nije null");
 
                 auto it = premiseSet.find(newClause);
 
                 if (it == premiseSet.end()) {
+
                     sos.push(newClause);
+                    printMe("ne postoji");
+
                     continue;
                 }
 
-                if (newClause.hasLessLiteralsThan(*it)) {
-                    premiseSet.erase(it);
-                    sos.push(newClause);
-                };
+                if (!newClause.hasLessLiteralsThan(*it)) continue;
+                printMe("ima manje literala");
+
+                premiseSet.erase(it);
+                sos.push(newClause);
+
             }
 
             wkb.addClause(clause1);
         }
+        printMe("Nije istina");
         return false;
     }
 

@@ -75,6 +75,8 @@ void Game::step() {
 
     if (atSafe()) addSafe(_position);
 
+    //_knowledgeBase.print();
+    //endline();
 
     ntimes(neighbours.size())
         foreach(neighbourPt, neighbours) {
@@ -87,19 +89,23 @@ void Game::step() {
 
             deduceAndAdd(neighbourPt, Pit);
             deduceAndAdd(neighbourPt, Wumpus);
-
-            //updateWumpusInfo(neighbourPt);
-
-            // redundant if(_knowledgeBase.check(neighbour,false,Teleport))
-            if (check(neighbourPt, false, Wumpus)) if (check(neighbourPt, false, Pit))
-                addSafe(neighbourPt);
-
-            if (unknown(neighbourPt, Wumpus) || unknown(neighbourPt, Pit)) if (!check(neighbourPt, true, Wumpus) &&
-                                                                               !check(neighbourPt, true,
-                                                                                      Pit));//addUnknown(neighbourPt);
-
         }
+
+    foreach(neighbourPt, neighbours) {
+        //updateWumpusInfo(neighbourPt);
+
+        // redundant if(_knowledgeBase.check(neighbour,false,Teleport))
+        if (check(neighbourPt, false, Wumpus)) if (check(neighbourPt, false, Pit))
+            addSafe(neighbourPt);
+
+        if (unknown(neighbourPt, Wumpus) || unknown(neighbourPt, Pit)) if (!check(neighbourPt, true, Wumpus) &&
+                                                                           !check(neighbourPt, true, Pit))
+            printMe("undefined");//addUnknown(neighbourPt);
+    }
+
+
     move();
+    _visited.insert(_position);
 }
 
 void Game::moveTo(Point const &point) {
