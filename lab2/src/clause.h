@@ -15,10 +15,11 @@ class Clause final {
 private:
     bool _isTautology = false;
 
+
     std::set<Literal<Atom>> _literalSet;
 
-
 public:
+
 
     Clause() { }
 
@@ -29,6 +30,7 @@ public:
     Clause(bool _prefix, const Atom &_label) : Clause(Literal<Atom>(_prefix, _label)) {
     }
 
+    std::set<Literal<Atom>> getLiteralSet() const { return _literalSet; }
 
     template<typename... Args>
     Clause(bool _prefix, const Atom &_label, Args... args) : Clause(args...) {
@@ -79,6 +81,7 @@ public:
     bool operator==(const Clause &other) const {
         auto it1 = this->_literalSet.begin();
         auto it2 = other._literalSet.begin();
+        if (this->_literalSet.size() != other._literalSet.size()) return false;
         for (; it1 != this->_literalSet.end() && it2 != other._literalSet.end(); it1++, it2++) {
             if (*it1 == *it2) return true;
         }
@@ -93,7 +96,7 @@ public:
             if (*it1 < *it2) return true;
             if (*it2 < *it1) return false;
         }
-        return false;
+        return this->_literalSet.size() < other._literalSet.size();
     }
 
     bool isTautology() const {

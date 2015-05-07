@@ -29,16 +29,16 @@ public:
 
     KnowledgeBase() { }
 
-    std::set<Clause<Atom>> getClauseSetCopy() const {
+    const std::set<Clause<Atom>> &getClauseSet() const {
         return _clauseSet;
     }
 
     void addClause(const Clause<Atom> &clause) {
         auto it = _clauseSet.find(clause);
-
-        if (it != _clauseSet.end() && it->hasLessLiteralsThan(clause))
-            return;
-
+        if (it != _clauseSet.end()) {
+            if (it->hasLessLiteralsThan(clause)) return;
+            _clauseSet.erase(it);
+        }
         _clauseSet.insert(clause);
     }
 
@@ -58,10 +58,17 @@ public:
     void deduceAndAdd(const Atom &atom) {
         auto negClauseT = Clause<Atom>(true, atom);
         auto negClauseF = Clause<Atom>(false, atom);
-        if (RefutationResolution<Atom>::deduce(*this, negClauseT))
-            addClause(negClauseT);
-        else if (RefutationResolution<Atom>::deduce(*this, negClauseF))
+        if (RefutationResolution<Atom>::deduce(*this, negClauseT)) {
+            negClauseF.print();
+            printMe(" je");
             addClause(negClauseF);
+        }
+        else if (RefutationResolution<Atom>::deduce(*this, negClauseF)) {
+            negClauseF.print();
+            printMe(" je");
+            addClause(negClauseT);
+        }
+        printMe("XXXXX");
     }
 };
 

@@ -13,13 +13,16 @@ void Game::load(std::string path) {
 void Game::initialPremisesAbout(Point p, const std::vector<Point> &world) {
     // todo: if not seen as adjacent
 
-    createRuleForNeighbours<false, Stench, false, Wumpus>(p);
-    createRuleForNeighbours<false, Breeze, false, Pit>(p);
-    createRuleForNeighbours<false, Glow, false, Teleport>(p);
+    createRuleForNeighbours<true, Stench, true, Wumpus, Op::Or>(p);
+    createRuleForNeighbours<false, Stench, false, Wumpus, Op::And>(p);
+    createRuleForNeighbours<true, Breeze, true, Pit, Op::Or>(p);
+    createRuleForNeighbours<false, Breeze, false, Pit, Op::And>(p);
+    createRuleForNeighbours<true, Glow, true, Teleport, Op::Or>(p);
+    createRuleForNeighbours<false, Glow, false, Teleport, Op::And>(p);
 
     // wumpus at point
-    foreach(pt, world)if (p != pt)
-            _knowledgeBase.addClause(Clause<Atom>(false, Atom(Wumpus, p), false, Atom(Wumpus, pt)));
+    //foreach(pt, world)if (p != pt)
+    //        _knowledgeBase.addClause(Clause<Atom>(false, Atom(Wumpus, p), false, Atom(Wumpus, pt)));
 }
 
 void Game::run() {
@@ -63,20 +66,19 @@ void Game::step() {
 
     foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt, _board.getAllPoints());
 
+    addPositionUnaryPremise<Pit>(false);
+    addPositionUnaryPremise<Teleport>(false);
+    addPositionUnaryPremise<Wumpus>(false);
 
-    addPositionUnaryPremise<false, Pit>();
-    addPositionUnaryPremise<false, Teleport>();
-    addPositionUnaryPremise<false, Wumpus>();
-
-
-    if (at<Glow>()) addPositionUnaryPremise<true, Glow>();
-    if (at<Breeze>()) addPositionUnaryPremise<true, Breeze>();
-    if (at<Stench>()) addPositionUnaryPremise<true, Stench>();
-
+    addPositionUnaryPremise<Glow>(at<Glow>());
+    addPositionUnaryPremise<Breeze>(at<Breeze>());
+    addPositionUnaryPremise<Stench>(at<Stench>());
     //if (atSafe()) addSafe(_position);
 
-    //_knowledgeBase.print();
     //endline();
+
+    _knowledgeBase.print();
+
 
     //ntimes(neighbours.size())
         foreach(neighbourPt, neighbours) {
@@ -90,6 +92,8 @@ void Game::step() {
             deduceAndAdd(neighbourPt, Pit);
             deduceAndAdd(neighbourPt, Wumpus);
         }
+
+    _knowledgeBase.print();
 
     foreach(neighbourPt, neighbours) {
         //updateWumpusInfo(neighbourPt);

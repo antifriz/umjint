@@ -10,12 +10,10 @@
 #include "knowledge_base.h"
 #include "clause.h"
 #include <queue>
+
 class ComparatorPricierPoint {
-    public:
-    bool operator()(const Point
-    &a,
-    const Point
-    &b) {
+public:
+    bool operator()(const Point &a, const Point &b) {
         return (a.x * 10 + a.y) > (b.x * 10 + b.y);
     }
 };
@@ -33,19 +31,25 @@ private:
     std::set<Point> _visited;
     bool _wumpusFound;
 public:
+    enum Op { Or, And };
+
     Game() : _board(), _position(1, 1), _wumpusFound(false) {
     }
 
     void load(std::string path);
 
-    void initialPremisesAbout(Point p, const std::vector <Point>
-    &world);
+    void initialPremisesAbout(Point p, const std::vector<Point> &world);
 
-    template<bool tPoint, Property pPoint, bool tNeighbour, Property pNeighbour>
+    template<bool tPoint, Property pPoint, bool tNeighbour, Property pNeighbour, Op op>
     void createRuleForNeighbours(Point p) {
-        Clause<Atom> c(tPoint, Atom(pPoint, p));
-        foreach(pt, _board.getNeighbours(p))c.addLiteral(tNeighbour, Atom(pNeighbour, pt));
-        _knowledgeBase.addClause(c);
+        if (op == Op::Or) {
+            Clause<Atom> c(!tPoint, Atom(pPoint, p));
+            foreach(pt, _board.getNeighbours(p))c.addLiteral(tNeighbour, Atom(pNeighbour, pt));
+            _knowledgeBase.addClause(c);
+        } else {
+            foreach(pt, _board.getNeighbours(p)) _knowledgeBase.addClause(
+                        Clause<Atom>(!tPoint, Atom(pPoint, p), tNeighbour, Atom(pNeighbour, pt)));
+        }
     }
 
     void run();
@@ -61,15 +65,13 @@ public:
 
     void step();
 
-    void moveTo(Point const
-    &point);
+    void moveTo(Point const &point);
 
     void move();
 
     bool hasSafe();
 
-    void addSafe(const Point
-    &point);
+    void addSafe(const Point &point);
 
     Point nextSafe();
 
@@ -82,14 +84,13 @@ public:
     }*/
 
 
-    template<bool prefix, Property property>
-    void addPositionUnaryPremise() {
-        addPositionUnaryPremise<prefix, property>(_position);
+    template<Property property>
+    void addPositionUnaryPremise(bool prefix) {
+        addPositionUnaryPremise<property>(prefix, _position);
     }
 
-    template<bool prefix, Property property>
-
-    void addPositionUnaryPremise(Point point) {
+    template<Property property>
+    void addPositionUnaryPremise(bool prefix, Point point) {
         _knowledgeBase.addClause(Clause<Atom>(prefix, Atom(property, point)));
     }
 

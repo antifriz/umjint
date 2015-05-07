@@ -51,7 +51,6 @@ const FieldData &Board::getData(const Point &point) const {
     assert(point.y <= width);
     assert(point.y <= height);
     auto val = ((point.x - 1) * height + point.y - 1);
-    printMe(val);
     return _fields.at((unsigned long) val);
 }
 
