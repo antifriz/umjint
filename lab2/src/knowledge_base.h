@@ -16,7 +16,7 @@ class RefutationResolution;
 template<typename Atom>
 class KnowledgeBase {
 private:
-    std::set<Clause<Atom>> _clauseSet;
+    std::set<Clause<Atom>, RedundantComparator<Atom>> _clauseSet;
 
 public:
 
@@ -29,21 +29,43 @@ public:
 
     KnowledgeBase() { }
 
-    const std::set<Clause<Atom>> &getClauseSet() const {
+    std::set<Clause<Atom>, RedundantComparator<Atom>> &getClauseSet() {
         return _clauseSet;
     }
 
     void addClause(const Clause<Atom> &clause) {
-/*        if (clause.getLiteralCount() == 1)
+        auto it = _clauseSet.find(clause);
+
+/*        endline();endline();
+        printMe("Knlg");
+        print();endline();
+        printMe("Cls");
+        clause.print();endline();*/
+
+        if (it == _clauseSet.end()) {
+            _clauseSet.insert(clause);
+        } else if (clause.hasLessLiteralsThan(*it)) {
+
+            _clauseSet.erase(it);
+            _clauseSet.insert(clause);
+        } else {
+
+        }
+        /*
+ *
+        if (clause.getLiteralCount() == 1)
+
             iterate(_clauseSet)
-                if (it->getLiteralCount() > 1) {
-                    bool hasAll = true;
-                    foreach(literal, it->getLiteralSet()) {
+                iterate2(_clauseSet) {
+
+                }
+                            if(it2->getLiteralCount()== 1)
+
                         if (literal == *clause.getLiteralSet().begin()) continue;
-                        {
+
                             hasAll = false;
                             break;
-                        }
+
                     }
                     if (hasAll)
                         _clauseSet.erase(it);
@@ -51,7 +73,6 @@ public:
                         printMe("jej");
                 }*/
 
-        _clauseSet.insert(clause);
     }
 
 
@@ -63,7 +84,14 @@ public:
 
 
     bool clauseExists(const Clause<Atom> &clause) {
-        return _clauseSet.find(clause) != _clauseSet.end();
+        RedundantComparator<Atom> rc;
+        iterate(_clauseSet)
+            if (!rc(*it, clause) && !rc(*it, clause))
+                return true;
+        return false;
+
+        auto b = _clauseSet.find(clause) != _clauseSet.end();
+        return b;
     }
 
 

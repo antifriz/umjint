@@ -30,7 +30,7 @@ public:
     Clause(bool _prefix, const Atom &_label) : Clause(Literal<Atom>(_prefix, _label)) {
     }
 
-    std::set<Literal<Atom>> getLiteralSet() const { return _literalSet; }
+    const std::set<Literal<Atom>> &getLiteralSet() const { return _literalSet; }
 
     template<typename... Args>
     Clause(bool _prefix, const Atom &_label, Args... args) : Clause(args...) {
@@ -38,18 +38,22 @@ public:
     }
 
     Literal<Atom> getBindingLiteral(Clause<Atom> const &other) const {
-        auto it1 = _literalSet.begin();
-        auto it2 = other._literalSet.begin();
-        for (; it1 != _literalSet.end(); it1++) {
+        auto &set1 = this->getLiteralSet();
+        auto it1 = set1.begin();
+
+        auto &set2 = other.getLiteralSet();
+        auto it2 = set2.begin();
+
+        for (; it1 != set1.end(); it1++) {
             auto atom = it1->getNegated();
 
-            for (; it2 != _literalSet.end(); it2++) {
+            for (; it2 != set2.end(); it2++) {
                 if (atom < *it2) break;
                 if (atom == *it2) return *it1;
             }
 
         }
-        return Literal < Atom > ();
+        return Literal<Atom>();
     }
 
     template<typename... Args>

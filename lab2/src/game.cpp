@@ -52,7 +52,8 @@ bool Game::unknown(Point point, Property property) {
 }
 
 bool Game::check(Point point, bool prefix, Property property) {
-    return _knowledgeBase.clauseExists(Clause<Atom>(prefix, Atom(property, point)));
+    auto s = _knowledgeBase.clauseExists(Clause<Atom>(prefix, Atom(property, point)));
+    return s;
 }
 
 void Game::step() {
@@ -77,9 +78,14 @@ void Game::step() {
     addPositionUnaryPremise<Stench>(at<Stench>());
     //if (atSafe()) addSafe(_position);
 
-    //endline();
 
-    // _knowledgeBase.print();
+
+    endline();
+    endline();
+    endline();
+    endline();
+
+    _knowledgeBase.print();
 
     foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
 
@@ -111,6 +117,7 @@ void Game::step() {
         deduceAndAdd(pt, Teleport);
 
         if (check(pt, true, Teleport)) {
+            printMe("teleport move");
             moveTo(pt);
             return;
         }

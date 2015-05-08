@@ -8,8 +8,9 @@ void Point::print() const {
     std::cout << "(" << x << "," << y << ")";
 }
 
-bool Point::operator==(const Point &other) const {
-    return x == other.x && y == other.y;
+bool Point::operator==(const Point &b) const {
+
+    return x == b.x && y == b.y;
 }
 
 bool Point::operator!=(const Point &other) const {

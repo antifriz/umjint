@@ -20,6 +20,7 @@
 #define ntimesz(n) ntimesVar(z,n)
 #define ntimes(n) ntimesi(n)
 #define iterate(container) for(auto it = (container).begin();it!=(container).end();it++)
+#define iterate2(container) for(auto it2 = (container).begin();it2!=(container).end();it2++)
 
 #define printVec(container) printMe("container{");foreach(item,container){printMe(item);}printMe("}")
 enum Property { Glow, Breeze, Stench, Teleport, Pit, Wumpus };

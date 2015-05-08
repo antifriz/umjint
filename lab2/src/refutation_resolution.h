@@ -23,14 +23,17 @@ class KnowledgeBase;
 template<typename Atom>
 
 struct RedundantComparator {
-    bool operator()(Clause<Atom> const &a, Clause<Atom> const &other) {
-        auto it1 = a.getLiteralSet().begin();
-        auto it2 = other.getLiteralSet().begin();
-        for (; it1 != a.getLiteralSet().end() && it2 != other.getLiteralSet().end(); it1++, it2++) {
+    bool operator()(Clause<Atom> const &a, Clause<Atom> const &b) {
+        std::set<Literal<Atom>> aSet(a.getLiteralSet());
+        std::set<Literal<Atom>> bSet(b.getLiteralSet());
+
+        auto it1 = aSet.begin();
+        auto it2 = bSet.begin();
+        for (; it1 != aSet.end() && it2 != bSet.end(); it1++, it2++) {
             if (*it1 < *it2) return true;
             if (*it2 < *it1) return false;
         }
-        return true;
+        return false;
     }
 };
 
@@ -39,7 +42,7 @@ template<typename Atom>
 class RefutationResolution {
 public:
     static bool deduce(const KnowledgeBase<Atom> &kb, const Clause<Atom> &negatedConsequence) {
-        std::set<Clause<Atom>> premiseSet(kb.getClauseSet());
+        KnowledgeBase<Atom> wkb(kb);
 /*
 
         foreach(item,){
@@ -65,6 +68,7 @@ public:
             Clause<Atom> clause1(*(--it));
             sos.erase(it);
 
+            std::set<Clause<Atom>, RedundantComparator<Atom>> premiseSet = wkb.getClauseSet();
             foreach(clause2, premiseSet) {
                 auto literal = clause1.getBindingLiteral(clause2);
 
@@ -106,7 +110,7 @@ public:
 
             }
 
-            premiseSet.insert(clause1);
+            wkb.addClause(clause1);
             //printMe(sos.size());
         }
         // printMe("Nije istina");
