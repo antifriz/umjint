@@ -15,14 +15,15 @@ void Game::initialPremisesAbout(Point p, const std::vector<Point> &world) {
 
     createRuleForNeighbours<true, Stench, true, Wumpus, Op::Or>(p);
     createRuleForNeighbours<false, Stench, false, Wumpus, Op::And>(p);
-    createRuleForNeighbours<true, Breeze, true, Pit, Op::Or>(p);
-    createRuleForNeighbours<false, Breeze, false, Pit, Op::And>(p);
-    createRuleForNeighbours<true, Glow, true, Teleport, Op::Or>(p);
-    createRuleForNeighbours<false, Glow, false, Teleport, Op::And>(p);
+    //createRuleForNeighbours<true, Breeze, true, Pit, Op::Or>(p);
+    //createRuleForNeighbours<false, Breeze, false, Pit, Op::And>(p);
+    //createRuleForNeighbours<true, Glow, true, Teleport, Op::Or>(p);
+    //createRuleForNeighbours<false, Glow, false, Teleport, Op::And>(p);
 
     // wumpus at point
-    //foreach(pt, world)if (p != pt)
-    //        _knowledgeBase.addClause(Clause<Atom>(false, Atom(Wumpus, p), false, Atom(Wumpus, pt)));
+    //foreach(pt, world)
+    //   if (p != pt)
+    //      _knowledgeBase.addClause(Clause<Atom>(false, Atom(Wumpus, p), false, Atom(Wumpus, pt)));
 }
 
 void Game::run() {
@@ -60,11 +61,11 @@ void Game::step() {
 
 
     auto &&neighbours = _board.getNeighbours(_position);
-
     initialPremisesAbout(_position, _board.getAllPoints());
 
 
     foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt, _board.getAllPoints());
+
 
     addPositionUnaryPremise<Pit>(false);
     addPositionUnaryPremise<Teleport>(false);
@@ -77,11 +78,13 @@ void Game::step() {
 
     //endline();
 
-    _knowledgeBase.print();
+    // _knowledgeBase.print();
+    printMe("stipe");
 
+    foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
 
     //ntimes(neighbours.size())
-        foreach(neighbourPt, neighbours) {
+/*        foreach(neighbourPt, neighbours) {
             deduceAndAdd(neighbourPt, Teleport);
 
             if (check(neighbourPt, true, Teleport)) {
@@ -91,9 +94,46 @@ void Game::step() {
 
             deduceAndAdd(neighbourPt, Pit);
             deduceAndAdd(neighbourPt, Wumpus);
+        }*/
+
+    std::vector<Point> v;
+    while (!_unknown.empty()) {
+        Point pt = _unknown.top();
+        _unknown.pop();
+        v.push_back(pt);
+        pt.print();
+        endline();
+    }
+
+    printMe("mate");
+
+    while (!v.empty()) {
+        Point pt = v.back();
+        v.pop_back();
+
+        deduceAndAdd(pt, Teleport);
+
+        if (check(pt, true, Teleport)) {
+            moveTo(pt);
+            return;
         }
 
-    _knowledgeBase.print();
+        deduceAndAdd(pt, Pit);
+        deduceAndAdd(pt, Wumpus);
+
+        //updateWumpusInfo(neighbourPt);
+
+        // redundant if(_knowledgeBase.check(neighbour,false,Teleport))
+        if (check(pt, false, Wumpus)) if (check(pt, false, Pit))
+            addSafe(pt);
+
+        if (unknown(pt, Wumpus) || unknown(pt, Pit)) if (!check(pt, true, Wumpus) && !check(pt, true, Pit))
+            addUnknown(pt);
+    }
+
+
+    //_knowledgeBase.print();
+/*
 
     foreach(neighbourPt, neighbours) {
         //updateWumpusInfo(neighbourPt);
@@ -106,6 +146,7 @@ void Game::step() {
                                                                            !check(neighbourPt, true, Pit))
             addUnknown(neighbourPt);
     }
+*/
 
 
     move();

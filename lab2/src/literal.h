@@ -20,7 +20,7 @@ public:
 
     Literal(bool _prefix, const Atom &_atom) : _prefix(_prefix), _atom(_atom), _null(false) { }
 
-    void togglePrefix() { _prefix ^= 1; }
+    void togglePrefix() { _prefix = !_prefix; }
 
     Literal getNegated() const {
         Literal copied(*this);

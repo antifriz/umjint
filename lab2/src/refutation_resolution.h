@@ -52,9 +52,14 @@ public:
         }
 */
 
+        // kb.print();endline();
+
         std::set<Clause<Atom>, RedundantComparator<Atom>> sos;
         sos.insert(negatedConsequence);
 
+        std::cout << "Dokazujem: ";
+        negatedConsequence.getLiteralSet().begin()->getNegated().print();
+        endline();
 
         while (!sos.empty()) {
             auto it = sos.end();
@@ -64,23 +69,37 @@ public:
             foreach(clause2, premiseSet) {
                 auto literal = clause1.getBindingLiteral(clause2);
 
-                if (literal.isNull()) continue;
+                if (literal.isNull())continue;
 
                 auto newClause = clause1.bind(clause2, literal);
+                std::cout << std::endl << " > ";
+                clause1.print();
+                std::cout << std::endl << " + ";
+                clause2.print();
+                std::cout << std::endl << " = ";
+                newClause.print();
+                endline();
 
                 if (newClause.isTautology()) continue;
+                printMe("nije tautologija");
 
 
-                if (newClause.isNull()) return true;
+                if (newClause.isNull()) {
+                    printMe("Istina");
+                    return true;
+                }
+                printMe("nije null");
 
                 auto it2 = premiseSet.find(newClause);
 
                 if (it2 == premiseSet.end()) {
                     sos.insert(newClause);
+                    printMe("ne postoji");
                     continue;
                 }
 
                 if (!newClause.hasLessLiteralsThan(*it2)) continue;
+                printMe("ima manje literala");
 
                 premiseSet.erase(it2);
                 sos.insert(newClause);
@@ -88,6 +107,7 @@ public:
             }
 
             premiseSet.insert(clause1);
+            printMe("korak gotov");
         }
         // printMe("Nije istina");
         return false;

@@ -16,7 +16,7 @@ void Board::print() const {
 
 std::vector<Point> Board::getAllPoints() {
     std::vector<Point> v;
-    ntimesx(height)ntimesy(width)v.push_back(Point(x, y));
+    ntimesx(height)ntimesy(width)v.push_back(Point(x + 1, y + 1));
     return v;
 }
 
@@ -60,9 +60,9 @@ std::vector<Point> Board::getNeighbours(const Point &position) const {
         neigh.emplace_back(position.x - 1, position.y);
     if (position.y > 2)
         neigh.emplace_back(position.x, position.y - 1);
-    if (position.x + 1 < width)
+    if (position.x < width)
         neigh.emplace_back(position.x + 1, position.y);
-    if (position.y + 1 < height)
+    if (position.y < height)
         neigh.emplace_back(position.x, position.y + 1);
     return neigh;
 }
