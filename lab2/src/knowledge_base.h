@@ -34,7 +34,7 @@ public:
     }
 
     void addClause(const Clause<Atom> &clause) {
-        if (clause.getLiteralCount() == 1)
+/*        if (clause.getLiteralCount() == 1)
             iterate(_clauseSet)
                 if (it->getLiteralCount() > 1) {
                     bool hasAll = true;
@@ -47,7 +47,9 @@ public:
                     }
                     if (hasAll)
                         _clauseSet.erase(it);
-                }
+                    if(hasAll)
+                        printMe("jej");
+                }*/
 
         _clauseSet.insert(clause);
     }

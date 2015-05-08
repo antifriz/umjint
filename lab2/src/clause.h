@@ -92,11 +92,15 @@ public:
     bool operator<(const Clause &other) const {
         auto it1 = this->_literalSet.begin();
         auto it2 = other._literalSet.begin();
+
+        if (this->_literalSet.size() != other._literalSet.size())
+            return this->_literalSet.size() < other._literalSet.size();
+
         for (; it1 != this->_literalSet.end() && it2 != other._literalSet.end(); it1++, it2++) {
             if (*it1 < *it2) return true;
             if (*it2 < *it1) return false;
         }
-        return this->_literalSet.size() < other._literalSet.size();
+        return false;
     }
 
     bool isTautology() const {

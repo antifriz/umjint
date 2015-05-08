@@ -52,8 +52,6 @@ public:
         }
 */
 
-        kb.print();
-        endline();
 
         std::set<Clause<Atom>, RedundantComparator<Atom>> sos;
         sos.insert(negatedConsequence);

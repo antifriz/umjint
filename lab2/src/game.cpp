@@ -56,7 +56,10 @@ bool Game::check(Point point, bool prefix, Property property) {
 }
 
 void Game::step() {
-
+    endline();
+    endline();
+    _knowledgeBase.print();
+    endline();
 
     auto &&neighbours = _board.getNeighbours(_position);
     initialPremisesAbout(_position);
@@ -77,7 +80,6 @@ void Game::step() {
     //endline();
 
     // _knowledgeBase.print();
-    printMe("stipe");
 
     foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
 
@@ -99,11 +101,8 @@ void Game::step() {
         Point pt = _unknown.top();
         _unknown.pop();
         v.push_back(pt);
-        pt.print();
-        endline();
     }
 
-    printMe("mate");
 
     while (!v.empty()) {
         Point pt = v.back();
