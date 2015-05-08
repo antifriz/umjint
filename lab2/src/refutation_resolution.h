@@ -69,12 +69,17 @@ public:
             sos.erase(it);
 
             std::set<Clause<Atom>, RedundantComparator<Atom>> premiseSet = wkb.getClauseSet();
+
+            std::vector<Clause<Atom>> eraseVector;
+
             foreach(clause2, premiseSet) {
+
                 auto literal = clause1.getBindingLiteral(clause2);
 
                 if (literal.isNull())continue;
 
                 auto newClause = clause1.bind(clause2, literal);
+
 /*                std::cout << std::endl << " > ";
                 clause1.print();
                 std::cout << std::endl << " + ";
@@ -102,13 +107,17 @@ public:
                     continue;
                 }
 
+
                 if (!newClause.hasLessLiteralsThan(*it2)) continue;
                 //printMe("ima manje literala");
 
-                premiseSet.erase(it2);
+                eraseVector.push_back(*it2);
+
                 sos.insert(newClause);
 
             }
+
+            foreach(item, eraseVector)premiseSet.erase(item);
 
             wkb.addClause(clause1);
             //printMe(sos.size());

@@ -84,14 +84,9 @@ public:
 
 
     bool clauseExists(const Clause<Atom> &clause) {
-        RedundantComparator<Atom> rc;
-        iterate(_clauseSet)
-            if (!rc(*it, clause) && !rc(*it, clause))
+        foreach(item, _clauseSet)if (item == clause)
                 return true;
         return false;
-
-        auto b = _clauseSet.find(clause) != _clauseSet.end();
-        return b;
     }
 
 
