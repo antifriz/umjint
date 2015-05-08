@@ -10,20 +10,15 @@ void Game::load(std::string path) {
     _wumpusFound = false;
 }
 
-void Game::initialPremisesAbout(Point p, const std::vector<Point> &world) {
+void Game::initialPremisesAbout(Point p) {
     // todo: if not seen as adjacent
 
     createRuleForNeighbours<true, Stench, true, Wumpus, Op::Or>(p);
     createRuleForNeighbours<false, Stench, false, Wumpus, Op::And>(p);
-    //createRuleForNeighbours<true, Breeze, true, Pit, Op::Or>(p);
-    //createRuleForNeighbours<false, Breeze, false, Pit, Op::And>(p);
-    //createRuleForNeighbours<true, Glow, true, Teleport, Op::Or>(p);
-    //createRuleForNeighbours<false, Glow, false, Teleport, Op::And>(p);
-
-    // wumpus at point
-    //foreach(pt, world)
-    //   if (p != pt)
-    //      _knowledgeBase.addClause(Clause<Atom>(false, Atom(Wumpus, p), false, Atom(Wumpus, pt)));
+    createRuleForNeighbours<true, Breeze, true, Pit, Op::Or>(p);
+    createRuleForNeighbours<false, Breeze, false, Pit, Op::And>(p);
+    createRuleForNeighbours<true, Glow, true, Teleport, Op::Or>(p);
+    createRuleForNeighbours<false, Glow, false, Teleport, Op::And>(p);
 }
 
 void Game::run() {
@@ -42,6 +37,9 @@ void Game::run() {
 bool Game::wumpusFound() {
     if (!_wumpusFound) return false;
     _wumpusFound = true;
+
+    foreach(pt, _board.getAllPoints())if (_position != pt)
+            addPositionUnaryPremise<Wumpus>(false, pt);
     return true;
 }
 
@@ -61,10 +59,10 @@ void Game::step() {
 
 
     auto &&neighbours = _board.getNeighbours(_position);
-    initialPremisesAbout(_position, _board.getAllPoints());
+    initialPremisesAbout(_position);
 
 
-    foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt, _board.getAllPoints());
+    foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt);
 
 
     addPositionUnaryPremise<Pit>(false);
@@ -119,11 +117,13 @@ void Game::step() {
         }
 
         deduceAndAdd(pt, Pit);
+        if (check(pt, true, Wumpus))
+            wumpusFound();
+
+
         deduceAndAdd(pt, Wumpus);
 
-        //updateWumpusInfo(neighbourPt);
 
-        // redundant if(_knowledgeBase.check(neighbour,false,Teleport))
         if (check(pt, false, Wumpus)) if (check(pt, false, Pit))
             addSafe(pt);
 

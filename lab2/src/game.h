@@ -38,7 +38,7 @@ public:
 
     void load(std::string path);
 
-    void initialPremisesAbout(Point p, const std::vector<Point> &world);
+    void initialPremisesAbout(Point p);
 
     template<bool tPoint, Property pPoint, bool tNeighbour, Property pNeighbour, Op op>
     void createRuleForNeighbours(Point p) {

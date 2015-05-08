@@ -34,11 +34,21 @@ public:
     }
 
     void addClause(const Clause<Atom> &clause) {
-        auto it = _clauseSet.find(clause);
-        if (it != _clauseSet.end()) {
-            if (it->hasLessLiteralsThan(clause)) return;
-            _clauseSet.erase(it);
-        }
+        if (clause.getLiteralCount() == 1)
+            iterate(_clauseSet)
+                if (it->getLiteralCount() > 1) {
+                    bool hasAll = true;
+                    foreach(literal, it->getLiteralSet()) {
+                        if (literal == *clause.getLiteralSet().begin()) continue;
+                        {
+                            hasAll = false;
+                            break;
+                        }
+                    }
+                    if (hasAll)
+                        _clauseSet.erase(it);
+                }
+
         _clauseSet.insert(clause);
     }
 
@@ -62,8 +72,7 @@ public:
             negClauseF.print();
             printMe(" je");
             addClause(negClauseF);
-        }
-        else if (RefutationResolution<Atom>::deduce(*this, negClauseF)) {
+        } else if (RefutationResolution<Atom>::deduce(*this, negClauseF)) {
             negClauseF.print();
             printMe(" je");
             addClause(negClauseT);

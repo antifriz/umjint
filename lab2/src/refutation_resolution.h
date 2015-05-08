@@ -30,7 +30,7 @@ struct RedundantComparator {
             if (*it1 < *it2) return true;
             if (*it2 < *it1) return false;
         }
-        return a.getLiteralSet().size() < other.getLiteralSet().size();
+        return true;
     }
 };
 
@@ -52,7 +52,8 @@ public:
         }
 */
 
-        // kb.print();endline();
+        kb.print();
+        endline();
 
         std::set<Clause<Atom>, RedundantComparator<Atom>> sos;
         sos.insert(negatedConsequence);
@@ -72,34 +73,35 @@ public:
                 if (literal.isNull())continue;
 
                 auto newClause = clause1.bind(clause2, literal);
-                std::cout << std::endl << " > ";
+/*                std::cout << std::endl << " > ";
                 clause1.print();
                 std::cout << std::endl << " + ";
                 clause2.print();
                 std::cout << std::endl << " = ";
                 newClause.print();
-                endline();
+                endline();*/
 
                 if (newClause.isTautology()) continue;
-                printMe("nije tautologija");
+                //printMe("nije tautologija");
 
 
                 if (newClause.isNull()) {
-                    printMe("Istina");
+                    //  printMe("Istina");
                     return true;
                 }
-                printMe("nije null");
+                //printMe("nije null");
 
                 auto it2 = premiseSet.find(newClause);
 
                 if (it2 == premiseSet.end()) {
                     sos.insert(newClause);
-                    printMe("ne postoji");
+                    //newClause.print();endline();
+                    //printMe("ne postoji");
                     continue;
                 }
 
                 if (!newClause.hasLessLiteralsThan(*it2)) continue;
-                printMe("ima manje literala");
+                //printMe("ima manje literala");
 
                 premiseSet.erase(it2);
                 sos.insert(newClause);
@@ -107,7 +109,7 @@ public:
             }
 
             premiseSet.insert(clause1);
-            printMe("korak gotov");
+            //printMe(sos.size());
         }
         // printMe("Nije istina");
         return false;
