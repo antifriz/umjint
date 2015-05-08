@@ -43,25 +43,12 @@ class RefutationResolution {
 public:
     static bool deduce(const KnowledgeBase<Atom> &kb, const Clause<Atom> &negatedConsequence) {
         KnowledgeBase<Atom> wkb(kb);
-/*
-
-        foreach(item,){
-            auto it = premiseSet.find(item);
-            if(it != premiseSet.end()){
-                if(it->getLiteralCount()<=item.getLiteralCount()) continue;
-                premiseSet.erase(it);
-            }
-            premiseSet.insert(item);
-        }
-*/
-
 
         std::set<Clause<Atom>, RedundantComparator<Atom>> sos;
         sos.insert(negatedConsequence);
 
         std::cout << "Dokazujem: ";
         negatedConsequence.getLiteralSet().begin()->getNegated().print();
-        endline();
 
         while (!sos.empty()) {
             auto it = sos.end();
@@ -94,6 +81,8 @@ public:
 
                 if (newClause.isNull()) {
                     //  printMe("Istina");
+                    printMe(" ISTINA");
+
                     return true;
                 }
                 //printMe("nije null");
@@ -122,7 +111,8 @@ public:
             wkb.addClause(clause1);
             //printMe(sos.size());
         }
-        // printMe("Nije istina");
+        printMe(" ");
+
         return false;
     }
 

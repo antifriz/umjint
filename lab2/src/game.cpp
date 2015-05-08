@@ -22,15 +22,11 @@ void Game::initialPremisesAbout(Point p) {
 }
 
 void Game::run() {
-    //foreach(p, _board.getAllPoints())
-    //    initialPremisesAbout(p,_board.getAllPoints());
 
     while (!ended()) {
         _position.print();
         std::cout << std::endl;
         step();
-
-        //break;
     }
 }
 
@@ -76,7 +72,6 @@ void Game::step() {
     addPositionUnaryPremise<Glow>(at<Glow>());
     addPositionUnaryPremise<Breeze>(at<Breeze>());
     addPositionUnaryPremise<Stench>(at<Stench>());
-    //if (atSafe()) addSafe(_position);
 
 
 
@@ -89,18 +84,6 @@ void Game::step() {
 
     foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
 
-    //ntimes(neighbours.size())
-/*        foreach(neighbourPt, neighbours) {
-            deduceAndAdd(neighbourPt, Teleport);
-
-            if (check(neighbourPt, true, Teleport)) {
-                moveTo(neighbourPt);
-                return;
-            }
-
-            deduceAndAdd(neighbourPt, Pit);
-            deduceAndAdd(neighbourPt, Wumpus);
-        }*/
 
     std::vector<Point> v;
     while (!_unknown.empty()) {
@@ -137,26 +120,7 @@ void Game::step() {
             addUnknown(pt);
     }
 
-
-    //_knowledgeBase.print();
-/*
-
-    foreach(neighbourPt, neighbours) {
-        //updateWumpusInfo(neighbourPt);
-
-        // redundant if(_knowledgeBase.check(neighbour,false,Teleport))
-        if (check(neighbourPt, false, Wumpus)) if (check(neighbourPt, false, Pit))
-            addSafe(neighbourPt);
-
-        if (unknown(neighbourPt, Wumpus) || unknown(neighbourPt, Pit)) if (!check(neighbourPt, true, Wumpus) &&
-                                                                           !check(neighbourPt, true, Pit))
-            addUnknown(neighbourPt);
-    }
-*/
-
-
     move();
-    //_visited.insert(_position);
 }
 
 void Game::moveTo(Point const &point) {
@@ -211,10 +175,6 @@ Point Game::nextSafe() {
     Point p(_safe.top());
     _safe.pop();
     return p;
-}
-
-bool Game::atSafe() {
-    return !at<Breeze>() && !at<Stench>();
 }
 
 bool Game::ended() {

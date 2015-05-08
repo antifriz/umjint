@@ -93,16 +93,10 @@ public:
     void deduceAndAdd(const Atom &atom) {
         auto negClauseT = Clause<Atom>(true, atom);
         auto negClauseF = Clause<Atom>(false, atom);
-        if (RefutationResolution<Atom>::deduce(*this, negClauseT)) {
-            negClauseF.print();
-            printMe(" je");
+        if (RefutationResolution<Atom>::deduce(*this, negClauseT))
             addClause(negClauseF);
-        } else if (RefutationResolution<Atom>::deduce(*this, negClauseF)) {
-            negClauseF.print();
-            printMe(" je");
+        else if (RefutationResolution<Atom>::deduce(*this, negClauseF))
             addClause(negClauseT);
-        }
-        printMe("XXXXX");
     }
 };
 

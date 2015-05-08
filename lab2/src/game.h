@@ -107,8 +107,6 @@ public:
         return _board.is<property>(_position);
     }
 
-    bool atSafe();
-
 
     bool ended();
 
