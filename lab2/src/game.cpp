@@ -79,8 +79,7 @@ bool Game::check(bool prefix, Property property, Point point) {
 std::vector<Point> Game::getNewNeighbours() {
     auto &&neighboursProposed = _board.getNeighbours(_position);
     std::vector<Point> neighboursNew;
-    foreach(neighbour, neighboursProposed)
-        if (_visited.find(neighbour) == _visited.end())
+    foreach(neighbour, neighboursProposed)if (_visited.find(neighbour) == _visited.end())
             neighboursNew.push_back(neighbour);
     return neighboursNew;
 }
@@ -123,7 +122,8 @@ void Game::step() {
     }
 
     if (at<Glow>())
-        foreach(neighbourPt, neighbours)if (deduceAndAdd(true, Teleport, neighbourPt)) {
+        foreach(neighbourPt, neighbours)
+            if (deduceAndAdd(true, Teleport, neighbourPt)) {
                 printMe("teleport move");
                 moveTo(neighbourPt);
                 return;

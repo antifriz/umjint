@@ -15,8 +15,7 @@ void Board::print() const {
 }
 
 void Board::print(std::set<Point> points) const {
-    ntimesy(height)
-        ntimesx(width) {
+    ntimesy(height)ntimesx(width) {
             if (points.find(Point(x + 1, y + 1)) != points.end())
                 std::cout << "X ";
             else
