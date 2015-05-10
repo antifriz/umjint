@@ -48,8 +48,6 @@ public:
 
             _clauseSet.erase(it);
             _clauseSet.insert(clause);
-        } else {
-
         }
         /*
  *
@@ -89,15 +87,29 @@ public:
         return false;
     }
 
+/*
+    bool deduceNeg(Clause<Atom> const & clause){
+        return RefutationResolution<Atom>::deduce(*this,clause);
+    }*/
 
+    bool deduceAndAdd(Literal<Atom> const &literal) {
+        if (RefutationResolution<Atom>::deduce(*this, literal.getNegated())) {
+            addClause(literal);
+            return true;
+        }
+        return false;
+    }
+/*
     void deduceAndAdd(const Atom &atom) {
+        auto start = time(nullptr);
         auto negClauseT = Clause<Atom>(true, atom);
         auto negClauseF = Clause<Atom>(false, atom);
-        if (RefutationResolution<Atom>::deduce(*this, negClauseT))
+        if (RefutationResolution<Atom>::deduce(*this, negClauseT)) {
             addClause(negClauseF);
-        else if (RefutationResolution<Atom>::deduce(*this, negClauseF))
+        } else if (RefutationResolution<Atom>::deduce(*this, negClauseF)) {
             addClause(negClauseT);
-    }
+        }
+    }*/
 };
 
 

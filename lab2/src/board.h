@@ -10,6 +10,7 @@
 
 #include "field_data.h"
 #include "point.h"
+#include <set>
 
 class Board {
 private:
@@ -21,6 +22,7 @@ public:
 
     void print() const;
 
+    void print(std::set<Point> points) const;
     std::vector<Point> getAllPoints();
 
     void load(std::string path);

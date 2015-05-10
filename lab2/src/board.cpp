@@ -14,6 +14,17 @@ void Board::print() const {
         }
 }
 
+void Board::print(std::set<Point> points) const {
+    ntimesy(height)
+        ntimesx(width) {
+            if (points.find(Point(x + 1, y + 1)) != points.end())
+                std::cout << "X ";
+            else
+                _fields[height * x + y].print();
+            if (x == width - 1) std::cout << std::endl;
+        }
+}
+
 std::vector<Point> Board::getAllPoints() {
     std::vector<Point> v;
     ntimesx(height)ntimesy(width)v.push_back(Point(x + 1, y + 1));

@@ -14,7 +14,7 @@
 class ComparatorPricierPoint {
 public:
     bool operator()(const Point &a, const Point &b) {
-        return (a.x * 10 + a.y) > (b.x * 10 + b.y);
+        return (a.x * 10 + a.y) == (b.x * 10 + b.y) ? (a < b) : (a.x * 10 + a.y) > (b.x * 10 + b.y);
     }
 };
 
@@ -36,7 +36,11 @@ public:
     Game() : _board(), _position(1, 1), _wumpusFound(false) {
     }
 
+    std::vector<Point> getNewNeighbours();
+
     void load(std::string path);
+
+    void printVisited();
 
     void initialPremisesAbout(Point p);
 
@@ -57,11 +61,11 @@ public:
 
     bool wumpusFound();
 
-    void deduceAndAdd(Point point, Property property);
+    bool deduceAndAdd(bool prefix, Property property, Point point);
 
-    bool check(Point point, bool prefix, Property property);
+    bool check(bool prefix, Property property, Point point);
 
-    bool unknown(Point point, Property property);
+    bool unknown(Property property, Point point);
 
     void step();
 

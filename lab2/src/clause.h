@@ -30,7 +30,7 @@ public:
     Clause(bool _prefix, const Atom &_label) : Clause(Literal<Atom>(_prefix, _label)) {
     }
 
-    const std::set<Literal<Atom>> &getLiteralSet() const { return _literalSet; }
+    inline const std::set<Literal<Atom>> &getLiteralSet() const { return _literalSet; }
 
     template<typename... Args>
     Clause(bool _prefix, const Atom &_label, Args... args) : Clause(args...) {
@@ -112,7 +112,7 @@ public:
     }
 
     bool hasLessLiteralsThan(const Clause &other) const {
-        return this->_literalSet.size() < other._literalSet.size();
+        return this->getLiteralCount() < other.getLiteralCount();
     }
 
     unsigned long getLiteralCount() const {
