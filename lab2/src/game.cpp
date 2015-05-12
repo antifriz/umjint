@@ -44,9 +44,6 @@ void Game::initialPremisesAbout(Point p) {
 void Game::run() {
 
     while (!ended()) {
-        std::cout << "AT: ";
-        _position.print();
-        endline();
         printVisited();
         //printSet(_safe);
         //printSet(_unknown);
@@ -128,6 +125,21 @@ void Game::step() {
                 moveTo(neighbourPt);
                 return;
             }
+
+    if (at<Stench>())
+    {
+        ntimes(v.size())
+        {
+            Point pt = v.back();
+            v.pop();
+            if (deduceAndAdd(true, Wumpus, pt)) {
+                wumpusFound();
+                break;
+            }
+            v.push(pt);
+        }
+    }
+
 
 
     while (!v.empty()) {
@@ -213,6 +225,10 @@ Point Game::nextSafe() {
 }
 
 bool Game::ended() {
+
+    std::cout << "AT: ";
+    _position.print();
+    endline();
     if (at<Teleport>()) {
         printMe("Pikard se spasio, pronasao je teleporter :)");
         return true;
