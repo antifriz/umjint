@@ -6,9 +6,9 @@
 #define PROJECT_LITERAL_H
 
 #include <iostream>
-#include "main.h"
+#include "lazy_defines.h"
+#include "atom.h"
 
-template<typename Atom>
 class Literal final {
 private:
     bool _prefix;
@@ -20,32 +20,17 @@ public:
 
     Literal(bool _prefix, const Atom &_atom) : _prefix(_prefix), _atom(_atom), _null(false) { }
 
-    void togglePrefix() { _prefix = !_prefix; }
+    void togglePrefix();
 
-    Literal getNegated() const {
-        Literal copied(*this);
-        copied.togglePrefix();
-        return copied;
-    }
+    Literal getNegated() const;
 
-    bool operator==(const Literal &other) const {
-        return _atom == other._atom && _prefix == other._prefix;
-    }
+    bool operator==(const Literal &other) const;
 
-    bool operator<(const Literal &other) const {
-        return _atom == other._atom ? _prefix < other._prefix : _atom < other._atom;
-    }
+    bool operator<(const Literal &other) const;
 
-    void print() const {
+    void print() const;
 
-        if (!_prefix)
-            std::cout << "( not ";
-
-        _atom.print();
-        if (!_prefix) std::cout << " )";
-    }
-
-    bool isNull() { return _null; }
+    bool isNull();
 };
 
 

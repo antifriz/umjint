@@ -48,24 +48,10 @@ void Game::run() {
     }
 }
 
-/*bool Game::wumpusFound() {
-    if (!_wumpusFound) return false;
-    _wumpusFound = true;
-
-    foreach(pt, _board.getAllPoints())if (_position != pt)
-            addPositionUnaryPremise<false,Wumpus>(pt);
-    return true;
-}*/
 
 bool Game::deduceAndAdd(bool prefix, Property property, Point point) {
-    return _knowledgeBase.deduceAndAdd(Literal<Atom>(prefix, Atom(property, point)));
+    return _knowledgeBase.deduceAndAdd(Literal(prefix, Atom(property, point)));
 }
-/*
-bool Game::check(bool prefix, Property property, Point point) {
-    auto s = _knowledgeBase.clauseExists(Clause<Atom>(prefix, Atom(property, point)));
-    return s;
-}*/
-
 std::vector<Point> Game:: getNewNeighbours() {
     auto &&neighboursProposed = _board.getNeighbours(_position);
     std::vector<Point> neighboursNew;
@@ -83,15 +69,6 @@ void Game::step() {
 
     auto &&neighbours = getNewNeighbours();
 
-
-    foreach(neighbour, neighbours) {
-        neighbour.print();
-        endline();
-    }/*
-    initialPremisesAbout(_position);*/
-/*
-    foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt);*/
-
     addPositionUnaryPremise<false,Pit>();
     addPositionUnaryPremise<false,Teleport>();
     addPositionUnaryPremise<false,Wumpus>();
@@ -108,38 +85,10 @@ void Game::step() {
                 return;
             }
 
-    _knowledgeBase.print();
-
     foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
 
     auto tmpUnknown(_unknown);
     while(!_unknown.empty())_unknown.pop();
-/*
-    while (!_unknown.empty()) {
-
-        if (hasSafe() && cpp(_unknown.top(), _safe.top())) break;
-
-        Point pt = _unknown.top();
-        _unknown.pop();
-        while (!_unknown.empty() && pt == _unknown.top()) _unknown.pop();
-        v.push(pt);
-    }
-*/
-
-/*
-    if (at<Stench>())
-    {
-        std::queue<Point> v2(v);
-        while(!v2.empty())
-        {
-            Point pt = v2.front();
-            v2.pop();
-            if (deduceAndAdd(true, Wumpus, pt)) {
-                wumpusFound();
-                break;
-            }
-        }
-    }*/
 
 
 

@@ -2,25 +2,17 @@
 // Created by ivan on 5/7/15.
 //
 
-#include "point_atom.h"
+#include "atom.h"
 
-Property const &PointAtom::get_property() const {
-    return _property;
-}
-
-Point const &PointAtom::get_point() const {
-    return _point;
-}
-
-bool PointAtom::operator==(const PointAtom &other) const {
+bool Atom::operator==(const Atom &other) const {
     return _point == other._point && _property == other._property;
 }
 
-bool PointAtom::operator<(const PointAtom &other) const {
+bool Atom::operator<(const Atom &other) const {
     return _point == other._point ? _property < other._property : _point < other._point;
 }
 
-void PointAtom::print() const {
+void Atom::print() const {
     char c = '?';
     if (_property == Wumpus) c = 'W'; else if (_property == Pit) c = 'P'; else if (_property == Glow)
         c = 'G';

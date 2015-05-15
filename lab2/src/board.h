@@ -5,7 +5,7 @@
 #ifndef PROJECT_BOARD_H
 #define PROJECT_BOARD_H
 
-#include "main.h"
+#include "lazy_defines.h"
 #include <vector>
 
 #include "field_data.h"
@@ -23,7 +23,6 @@ public:
     void print() const;
 
     void print(std::set<Point> visited, Point current) const;
-    std::vector<Point> getAllPoints();
 
     void load(std::string path);
 

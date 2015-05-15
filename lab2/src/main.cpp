@@ -2,7 +2,7 @@
 // Created by ivan on 5/7/15.
 //
 
-#include "main.h"
+#include "lazy_defines.h"
 #include "game.h"
 
 int main(int argc, char *argv[]) {

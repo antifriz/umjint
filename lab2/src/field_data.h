@@ -5,7 +5,7 @@
 #ifndef PROJECT_FIELD_DATA_H
 #define PROJECT_FIELD_DATA_H
 
-#include "main.h"
+#include "atom.h"
 
 class FieldData {
 public:

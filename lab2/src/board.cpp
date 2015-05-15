@@ -28,12 +28,6 @@ void Board::print(std::set<Point> visited, Point current) const {
         }
 }
 
-std::vector<Point> Board::getAllPoints() {
-    std::vector<Point> v;
-    ntimesx(height)ntimesy(width)v.push_back(Point(x + 1, y + 1));
-    return v;
-}
-
 void Board::load(std::string path) {
     std::string line;
     std::ifstream file(path);

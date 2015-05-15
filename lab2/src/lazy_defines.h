@@ -23,7 +23,6 @@
 #define iterate2(container) for(auto it2 = (container).begin();it2!=(container).end();it2++)
 
 #define printVec(container) printMe("container{");foreach(item,container){printMe(item);}printMe("}")
-enum Property { Glow, Breeze, Stench, Teleport, Pit, Wumpus };
 
 
 #endif //PROJECT_MAIN_H
