@@ -34,43 +34,19 @@ public:
     }
 
     void addClause(const Clause<Atom> &clause) {
-        auto it = _clauseSet.find(clause);
-
-/*        endline();endline();
-        printMe("Knlg");
-        print();endline();
-        printMe("Cls");
-        clause.print();endline();*/
-
-        if (it == _clauseSet.end()) {
-            _clauseSet.insert(clause);
-        } else if (clause.hasLessLiteralsThan(*it)) {
-
-            _clauseSet.erase(it);
-            _clauseSet.insert(clause);
+        while(true){
+            auto it = _clauseSet.find(clause);
+            if (it == _clauseSet.end()) {
+                break;
+            }
+            else if (clause.hasLessLiteralsThan(*it)) {
+                _clauseSet.erase(it);
+            }
+            else{
+                return;
+            }
         }
-        /*
- *
-        if (clause.getLiteralCount() == 1)
-
-            iterate(_clauseSet)
-                iterate2(_clauseSet) {
-
-                }
-                            if(it2->getLiteralCount()== 1)
-
-                        if (literal == *clause.getLiteralSet().begin()) continue;
-
-                            hasAll = false;
-                            break;
-
-                    }
-                    if (hasAll)
-                        _clauseSet.erase(it);
-                    if(hasAll)
-                        printMe("jej");
-                }*/
-
+        _clauseSet.insert(clause);
     }
 
 

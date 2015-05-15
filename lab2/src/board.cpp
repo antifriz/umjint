@@ -14,10 +14,14 @@ void Board::print() const {
         }
 }
 
-void Board::print(std::set<Point> points) const {
+void Board::print(std::set<Point> visited, Point current) const {
     ntimesy(height)ntimesx(width) {
-            if (points.find(Point(x + 1, y + 1)) != points.end())
+            assert(visited.find(current)==visited.end());
+
+            if (visited.find(Point(x + 1, y + 1)) != visited.end())
                 std::cout << "X ";
+            else if(Point(x + 1, y + 1) == current)
+                std::cout<< "O ";
             else
                 _fields[height * x + y].print();
             if (x == width - 1) std::cout << std::endl;
@@ -66,9 +70,9 @@ const FieldData &Board::getData(const Point &point) const {
 
 std::vector<Point> Board::getNeighbours(const Point &position) const {
     std::vector<Point> neigh;
-    if (position.x > 2)
+    if (position.x > 1)
         neigh.emplace_back(position.x - 1, position.y);
-    if (position.y > 2)
+    if (position.y > 1)
         neigh.emplace_back(position.x, position.y - 1);
     if (position.x < width)
         neigh.emplace_back(position.x + 1, position.y);

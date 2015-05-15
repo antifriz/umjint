@@ -4,7 +4,6 @@
 
 #include "game.h"
 
-
 void printSet(std::priority_queue<Point, std::vector<Point>, ComparatorPricierPoint> sett) {
     std::vector<Point> tmp;
     while (!sett.empty()) {
@@ -27,10 +26,11 @@ void printSet(std::priority_queue<Point, std::vector<Point>, ComparatorPricierPo
 void Game::load(std::string path) {
     _board.load(path);
     _position = Point(1, 1);
+    seen.insert(_position);
     _wumpusFound = false;
 }
 
-void Game::initialPremisesAbout(Point p) {
+/*void Game::initialPremisesAbout(Point p) {
     // todo: if not seen as adjacent
 
     createRuleForNeighbours<true, Stench, true, Wumpus, Op::Or>(p);
@@ -39,84 +39,66 @@ void Game::initialPremisesAbout(Point p) {
     createRuleForNeighbours<false, Breeze, false, Pit, Op::And>(p);
     createRuleForNeighbours<true, Glow, true, Teleport, Op::Or>(p);
     createRuleForNeighbours<false, Glow, false, Teleport, Op::And>(p);
-}
+}*/
 
 void Game::run() {
 
     while (!ended()) {
-        printVisited();
-        //printSet(_safe);
-        //printSet(_unknown);
         step();
     }
 }
 
-bool Game::wumpusFound() {
+/*bool Game::wumpusFound() {
     if (!_wumpusFound) return false;
     _wumpusFound = true;
 
     foreach(pt, _board.getAllPoints())if (_position != pt)
-            addPositionUnaryPremise<Wumpus>(false, pt);
+            addPositionUnaryPremise<false,Wumpus>(pt);
     return true;
-}
+}*/
 
 bool Game::deduceAndAdd(bool prefix, Property property, Point point) {
     return _knowledgeBase.deduceAndAdd(Literal<Atom>(prefix, Atom(property, point)));
 }
-
-bool Game::unknown(Property property, Point point) {
-    return !check(true, property, point) && !check(false, property, point);
-}
-
+/*
 bool Game::check(bool prefix, Property property, Point point) {
     auto s = _knowledgeBase.clauseExists(Clause<Atom>(prefix, Atom(property, point)));
     return s;
-}
+}*/
 
-std::vector<Point> Game::getNewNeighbours() {
+std::vector<Point> Game:: getNewNeighbours() {
     auto &&neighboursProposed = _board.getNeighbours(_position);
     std::vector<Point> neighboursNew;
-    foreach(neighbour, neighboursProposed)if (_visited.find(neighbour) == _visited.end())
-            neighboursNew.push_back(neighbour);
+    foreach(neighbour, neighboursProposed)
+    if (seen.find(neighbour) == seen.end()){
+        neighboursNew.push_back(neighbour);
+        seen.insert(neighbour);
+    }
     return neighboursNew;
 }
 
 void Game::step() {
 
-    _visited.insert(_position);
+    visited.insert(_position);
 
     auto &&neighbours = getNewNeighbours();
 
-    foreach(neigbour, neighbours) {
-        neigbour.print();
+
+    foreach(neighbour, neighbours) {
+        neighbour.print();
         endline();
-    }
-    initialPremisesAbout(_position);
+    }/*
+    initialPremisesAbout(_position);*/
+/*
+    foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt);*/
 
-    foreach(neighbourPt, neighbours)initialPremisesAbout(neighbourPt);
+    addPositionUnaryPremise<false,Pit>();
+    addPositionUnaryPremise<false,Teleport>();
+    addPositionUnaryPremise<false,Wumpus>();
 
-    addPositionUnaryPremise<Pit>(false);
-    addPositionUnaryPremise<Teleport>(false);
-    addPositionUnaryPremise<Wumpus>(false);
-
-    addPositionUnaryPremise<Glow>(at<Glow>());
-    addPositionUnaryPremise<Breeze>(at<Breeze>());
-    addPositionUnaryPremise<Stench>(at<Stench>());
-
-    foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
-
-    ComparatorPricierPoint cpp;
-    std::queue<Point> v;
-
-    while (!_unknown.empty()) {
-
-        if (hasSafe() && cpp(_unknown.top(), _safe.top())) break;
-
-        Point pt = _unknown.top();
-        _unknown.pop();
-        while (!_unknown.empty() && pt == _unknown.top()) _unknown.pop();
-        v.push(pt);
-    }
+    addNeighbouringPresumption<Teleport>(at<Glow>());
+    addNeighbouringPresumption<Pit>(at<Breeze>());
+    addNeighbouringPresumption<Wumpus>( at<Stench>());
 
     if (at<Glow>())
         foreach(neighbourPt, neighbours)
@@ -126,41 +108,52 @@ void Game::step() {
                 return;
             }
 
+    _knowledgeBase.print();
+
+    foreach(neighbourPt, neighbours)addUnknown(neighbourPt);
+
+    auto tmpUnknown(_unknown);
+    while(!_unknown.empty())_unknown.pop();
+/*
+    while (!_unknown.empty()) {
+
+        if (hasSafe() && cpp(_unknown.top(), _safe.top())) break;
+
+        Point pt = _unknown.top();
+        _unknown.pop();
+        while (!_unknown.empty() && pt == _unknown.top()) _unknown.pop();
+        v.push(pt);
+    }
+*/
+
+/*
     if (at<Stench>())
     {
-        ntimes(v.size())
+        std::queue<Point> v2(v);
+        while(!v2.empty())
         {
-            Point pt = v.back();
-            v.pop();
+            Point pt = v2.front();
+            v2.pop();
             if (deduceAndAdd(true, Wumpus, pt)) {
                 wumpusFound();
                 break;
             }
-            v.push(pt);
         }
-    }
+    }*/
 
 
 
-    while (!v.empty()) {
-        Point pt = v.front();
-
-        v.pop();
+    while (!tmpUnknown.empty()) {
+        auto pt = tmpUnknown.top();
+        tmpUnknown.pop();
 
         if (deduceAndAdd(false, Pit, pt) && deduceAndAdd(false, Wumpus, pt)) {
             addSafe(pt);
-            continue;
         }
-        addUnknown(pt);
+        else if (!deduceAndAdd(true, Pit, pt) && !deduceAndAdd(true, Wumpus, pt))
+            addUnknown(pt);
     }
-    if (!hasSafe()) {
-        while (hasUnknown()) {
-            auto pt = _unknown.top();
-            if (!deduceAndAdd(true, Pit, pt) && !deduceAndAdd(true, Wumpus, pt))
-                break;
-            _unknown.pop();
-        }
-    }
+
 
     move();
 }
@@ -171,6 +164,12 @@ void Game::moveTo(Point const &point) {
 }
 
 void Game::move() {
+    printMe("safe");
+    printSet(_safe);
+    printMe("unknown");
+    printSet(_unknown);
+    endline();endline();
+
     if (hasSafe()) {
         printMe("safe move");
         moveTo(nextSafe());
@@ -182,9 +181,11 @@ void Game::move() {
 
     } else {
         printMe("predah se");
+        printVisited();
         exit(0);
     }
 
+    printVisited();
 
 }
 
@@ -213,7 +214,7 @@ Point Game::nextUnknown() {
 }
 
 void Game::printVisited() {
-    _board.print(_visited);
+    _board.print(visited,_position);
 }
 
 Point Game::nextSafe() {
@@ -229,6 +230,7 @@ bool Game::ended() {
     std::cout << "AT: ";
     _position.print();
     endline();
+
     if (at<Teleport>()) {
         printMe("Pikard se spasio, pronasao je teleporter :)");
         return true;
@@ -242,8 +244,4 @@ bool Game::ended() {
         return true;
     }
     return false;
-}
-
-void Game::printBoard() {
-    _board.print();
 }

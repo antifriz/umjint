@@ -22,7 +22,7 @@ public:
 
     void print() const;
 
-    void print(std::set<Point> points) const;
+    void print(std::set<Point> visited, Point current) const;
     std::vector<Point> getAllPoints();
 
     void load(std::string path);

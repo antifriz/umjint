@@ -17,7 +17,6 @@ public:
 
     PointAtom(Property const &_property, const Point &_point) : _property(_property), _point(_point) { }
 
-
     Property const &get_property() const;
 
     Point const &get_point() const;

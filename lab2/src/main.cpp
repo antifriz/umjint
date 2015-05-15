@@ -11,8 +11,8 @@ int main(int argc, char *argv[]) {
     Game game;
     game.load(argv[1]);
     printMe("loaded");
-    game.printBoard();
+    game.printVisited();
     printMe("printed");
-
     game.run();
+
 }

@@ -49,15 +49,12 @@ public:
 
         KnowledgeBase<Atom> wkb(kb);
 
+        bool nec = *negatedConsequence.getLiteralSet().begin()==Literal<Atom>(false,Atom(Pit,Point(3,3)));
+
         std::set<Clause<Atom>, RedundantComparator<Atom>> sos;
         sos.insert(negatedConsequence);
 
-        auto start = boost::posix_time::microsec_clock::local_time();
-
         while (!sos.empty()) {
-            auto end = boost::posix_time::microsec_clock::local_time();
-            if ((end - start).total_milliseconds() > 100)
-                break;
 
             auto it = sos.end();
             Clause<Atom> clause1(*(--it));
@@ -68,8 +65,6 @@ public:
             std::vector<Clause<Atom>> eraseVector;
 
             foreach(clause2, premiseSet) {
-
-                if (clause1.getLiteralCount() > 2 && clause2.getLiteralCount() > 2) continue;
 
                 auto literal = clause1.getBindingLiteral(clause2);
 
@@ -84,20 +79,6 @@ public:
                     return true;
                 }
 
-
-                if (newClause.getLiteralCount() > 5) continue;
-
-                /*if(nec)                {
-                    std::cout << std::endl << " > ";
-                    clause1.print();
-                    std::cout << std::endl << " + ";
-                    clause2.print();
-                    std::cout << std::endl << " = ";
-                    newClause.print();
-                    endline();
-
-                }
-*/
                 auto it2 = premiseSet.find(newClause);
 
                 if (it2 == premiseSet.end()) {
