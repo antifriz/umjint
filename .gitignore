@@ -1,3 +1,8 @@
+### SVN template
+.svn/
+
+
+### C++ template
 # Compiled Object files
 *.slo
 *.lo
@@ -24,5 +29,29 @@
 
 # Executables
 *.exe
-*.out
 *.app
+
+
+### CMake template
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+.idea
+
+### C template
+# Object files
+*.ko
+*.elf
+
+# Shared objects (inc. Windows DLLs)
+*.so.*
+# Executables
+*.i*86
+*.x86_64
+*.hex
+
+
+.idea
