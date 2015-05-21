@@ -1,0 +1,110 @@
+Grupa = Puhacki, Na_Udar, Klavijature, Gudacki, Zicani
+Podgrupa = Puhacki_drveni, Puhacki_limeni, Bubnjevi, Udaraljke  
+Velicina = mali, srednji, veliki
+Materijal = drvo, metal
+Broj_zica = 4, 6, 8
+Zvuk_Nastaje = udarac, trzaj, puhanje, gudanje, pritisak
+Udara_Povrsinu = da, ne
+Raspon_Oktava = mali, srednji, veliki
+Zvuk = rezak, tup, dubok, visok, zaobljen
+Oblik = trokutast, okrugli
+Instrument = Flauta, Oboa, Klarinet, Saksofon, Truba, Trombon, Timpan, Bocni_bubanj, Tenorski_bubanj, Cimbal, Tamtam, Trokut, Drveni_blok, Ksilofon, Mandolina, Gitara, Bas_gitara, Tamburica, Violina, Viola, Violoncelo, Kontrabas, Klavir, Celesta, Orgulje
+
+IF Zvuk_Nastaje = udarac
+THEN Grupa = Na_Udar
+
+IF Zvuk_Nastaje = trzaj
+THEN Grupa = Zicani
+
+IF Zvuk_Nastaje = puhanje
+THEN Grupa = Puhacki
+
+IF Zvuk_Nastaje = gudanje
+THEN Grupa = Gudacki
+
+IF Zvuk_Nastaje = pritisak
+THEN Grupa = Klavijature
+
+IF Grupa = Puhacki & Materijal = drvo
+THEN Podgrupa = Puhacki_drveni
+
+IF Grupa = Puhacki & Materijal = metal
+THEN Podgrupa = Puhacki_limeni
+
+IF Grupa = Na_Udar & Udara_Povrsinu = da
+THEN Podgrupa = Bubnjevi
+
+IF Grupa = Na_Udar & Udara_Povrsinu = ne
+THEN Podgrupa = Udaraljke
+
+IF Podgrupa = Puhacki_drveni & Velicina = mali & Zvuk = zaobljen & Raspon_Oktava = srednji
+THEN Instrument = Flauta
+
+IF Podgrupa = Puhacki_drveni & Velicina = srednji & Zvuk = rezak & Raspon_Oktava = srednji
+THEN Instrument = Oboa
+
+IF Podgrupa = Puhacki_drveni & Velicina = srednji & Zvuk = visok & Raspon_Oktava = mali
+THEN Instrument = Klarinet
+
+IF Podgrupa = Puhacki_limeni & Velicina = veliki & Zvuk = rezak & Raspon_Oktava = srednji
+THEN Instrument = Saksofon
+
+IF Podgrupa = Puhacki_limeni & Velicina = mali & Zvuk = rezak & Raspon_Oktava = mali
+THEN Instrument = Truba
+
+IF Podgrupa = Puhacki_limeni & Velicina = srednji & Zvuk = rezak & Raspon_Oktava = mali
+THEN Instrument = Trombon
+
+IF Podgrupa = Bubnjevi & Velicina = veliki & Zvuk = tup & Materijal = metal 
+THEN Instrument = Timpan
+
+IF Podgrupa = Bubnjevi & Velicina = mali & Zvuk = rezak & Materijal = drvo 
+THEN Instrument = Bocni_bubanj
+
+IF Podgrupa = Bubnjevi & Velicina = srednji & Zvuk = visok & Materijal = metal
+THEN Instrument = Tenorski_bubanj
+
+IF Podgrupa = Udaraljke & Velicina = srednji & Zvuk = rezak & Materijal = metal
+THEN Instrument = Cimbal
+
+IF Podgrupa = Udaraljke & Velicina = mali & Zvuk = visok & Materijal = metal & Oblik = okrugli
+THEN Instrument = Tamtam
+
+IF Podgrupa = Udaraljke & Velicina = mali & Zvuk = rezak & Materijal = metal & Oblik = trokutast
+THEN Instrument = Trokut
+
+IF Podgrupa = Udaraljke & Velicina = mali & Zvuk = zaobljen & Materijal = drvo
+THEN Instrument = Drveni_blok
+
+IF Grupa = Zicani & Velicina = srednji & Zvuk = rezak & Broj_zica = 8
+THEN Instrument = Mandolina
+
+IF Grupa = Zicani & Velicina = mali & Zvuk = rezak & Broj_zica = 4
+THEN Instrument = Tamburica
+
+IF Grupa = Zicani & Velicina = srednji & Zvuk = zaobljen & Broj_zica = 6
+THEN Instrument = Gitara
+
+IF Grupa = Zicani & Velicina = srednji & Zvuk = dubok & Broj_zica = 4
+THEN Instrument = Bas_gitara
+
+IF Grupa = Gudacki & Velicina = mali & Zvuk = zaobljen & Broj_zica = 4
+THEN Instrument = Violina
+
+IF Grupa = Gudacki & Velicina = srednji & Zvuk = zaobljen & Broj_zica = 4
+THEN Instrument = Viola
+
+IF Grupa = Gudacki & Velicina = veliki & Zvuk = zaobljen & Broj_zica = 4
+THEN Instrument = Violoncelo
+
+IF Grupa = Gudacki & Velicina = veliki & Zvuk = tup & Broj_zica = 4
+THEN Instrument = Kontrabas
+
+IF Grupa = Klavijature & Velicina = veliki & Zvuk = zaobljen & Materijal = drvo & Raspon_Oktava = veliki
+THEN Instrument = Klavir
+
+IF Grupa = Klavijature & Velicina = veliki & Zvuk = visok & Materijal = drvo & Raspon_Oktava = srednji
+THEN Instrument = Celesta
+
+IF Grupa = Klavijature & Velicina = veliki & Zvuk = tup & Materijal = metal & Raspon_Oktava = veliki
+THEN Instrument = Orgulje
