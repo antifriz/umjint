@@ -137,7 +137,9 @@ class NewtorkTrainer:
 
     def crossing_over(self, candidate_a, candidate_b):
         position = random.randint(0, self.chromosome_cnt - 1)
-        return candidate_a[:position] + candidate_b[position:], candidate_b[:position] + candidate_a[position:]
+        crossed_part = [x/2+y/2 for x,y in zip( candidate_b[position:], candidate_a[position:])]
+
+        return candidate_a[:position] +crossed_part, candidate_a[:position]+ crossed_part
 
     def mutatate(self, candidate):
         #print "-mutating:"
@@ -179,8 +181,9 @@ class NewtorkTrainer:
         fitness_ratios = [x / fitnesses_sum for x in fitnesses]
         mother,idx1 = self.choose_candidate(fitness_ratios)
         father,idx2 = self.choose_candidate(fitness_ratios)
-        if idx2 == idx1:
-            father = self.population[idx2+1] if idx2+1<len(self.population) else self.population[0]
+        while idx2 == idx1:
+            father,idx2 = self.choose_candidate(fitness_ratios)
+            #father = self.population[idx2+1] if idx2+1<len(self.population) else self.population[0]
 
         #print "-crossing over:"
         #print mother
@@ -233,7 +236,7 @@ class NewtorkTrainer:
 
 neural_network = SimpleNeuralNetwork(hidden_layer_n)
 
-trainer = NewtorkTrainer(neural_network,population_cnt= 4, mutation_sigma=0.1,iterations=10000)
+trainer = NewtorkTrainer(neural_network,population_cnt= 5, mutation_sigma=0.5,iterations=10000)
 
 train_set = []
 for line in fileinput.input("training-set.txt"):
@@ -255,9 +258,16 @@ for line in fileinput.input("test-set.txt"):
 mse = 0
 for input,output in test_set:
     ann_output = ann.evaluate(input)
+
     se = pow(ann_output-output,2)
-    print se
+    print u'Ulaz: {0:7.4f} Izlaz: {1:7.4f} Ocekivani izlaz: {2:7.4f} SE: {3:7.4f}'.format(input,ann_output,output,se)
     mse+=se
+
+while True:
+    input = float(raw_input("Unesi ulaz: "))
+    ann_output = ann.evaluate(input)
+    print u'Ulaz: {0:7.4f} Izlaz: {1:7.4f}'.format(input,ann_output)
+
 
 mse/= len(test_set)
 print "MSE:",mse
